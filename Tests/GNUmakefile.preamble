@@ -1,0 +1,17 @@
+ADDITIONAL_INCLUDE_DIRS += -I..
+
+# The title bar geometry is the theme's answer to the window manager, so the
+# whole theme is linked in rather than reimplemented here. NSFont+George.m is
+# left out on purpose: its +load swizzles the interface font, which has
+# nothing to do with what these tests prove.
+t_GeorgeTitleBar_OBJC_FILES += ../George.m \
+                               ../George+Frame.m \
+                               ../George+Menu.m \
+                               ../George+Parts.m \
+                               ../George+TabView.m \
+                               ../George+TitleBar.m \
+                               ../GeorgePlatinum.m \
+                               ../GeorgeScrollerCells.m
+
+t_GeorgePlatinum_TOOL_LIBS += -lgnustep-gui
+t_GeorgeTitleBar_TOOL_LIBS += -lgnustep-gui

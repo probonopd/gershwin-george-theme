@@ -1,0 +1,6 @@
+# George draws its interface text in the Chicago Kare UI font (MIT, see
+# Resources/Fonts), which fontconfig only finds in the system font directory.
+after-install::
+	$(MKDIRS) $(DESTDIR)/System/Library/Fonts/ChicagoKare
+	$(INSTALL_DATA) Resources/Fonts/ChicagoKare-Regular.ttf $(DESTDIR)/System/Library/Fonts/ChicagoKare/
+	$(INSTALL_DATA) Resources/Fonts/ChicagoKare-LICENSE.txt $(DESTDIR)/System/Library/Fonts/ChicagoKare/
