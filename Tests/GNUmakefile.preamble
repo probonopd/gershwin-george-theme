@@ -1,11 +1,26 @@
+# Copyright (c) 2026 Simon Peter
+#
+# SPDX-License-Identifier: BSD-2-Clause
+
 ADDITIONAL_INCLUDE_DIRS += -I..
 
 # The title bar geometry is the theme's answer to the window manager, so the
 # whole theme is linked in rather than reimplemented here. NSFont+George.m is
 # left out on purpose: its +load swizzles the interface font, which has
 # nothing to do with what these tests prove.
+t_GeorgeIcons_OBJC_FILES += ../George.m \
+                            ../George+Frame.m \
+                            ../George+Icons.m \
+                            ../George+Menu.m \
+                            ../George+Parts.m \
+                            ../George+TabView.m \
+                            ../George+TitleBar.m \
+                            ../GeorgePlatinum.m \
+                            ../GeorgeScrollerCells.m
+
 t_GeorgeTitleBar_OBJC_FILES += ../George.m \
                                ../George+Frame.m \
+                               ../George+Icons.m \
                                ../George+Menu.m \
                                ../George+Parts.m \
                                ../George+TabView.m \
@@ -13,5 +28,7 @@ t_GeorgeTitleBar_OBJC_FILES += ../George.m \
                                ../GeorgePlatinum.m \
                                ../GeorgeScrollerCells.m
 
+t_GeorgeFonts_TOOL_LIBS += -lgnustep-gui
+t_GeorgeIcons_TOOL_LIBS += -lgnustep-gui
 t_GeorgePlatinum_TOOL_LIBS += -lgnustep-gui
 t_GeorgeTitleBar_TOOL_LIBS += -lgnustep-gui

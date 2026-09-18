@@ -1,0 +1,12 @@
+﻿The FontStruction “Geneva 9.2”
+(https://fontstruct.com/fontstructions/show/1744455) by “Techstar01” is
+licensed under a Creative Commons Attribution Share Alike license
+(http://creativecommons.org/licenses/by-sa/3.0/).
+“Geneva 9.2” was originally cloned (copied) from the FontStruction “Geneva
+9.1” (https://fontstruct.com/fontstructions/show/1304775) by “Kelsey
+Higham”, which is licensed under a Open Font License license
+(https://fontstruct.com/fontstructions/license/1304775).
+“Geneva 9.1” was in turn cloned (copied) from the FontStruction “Geneva
+9” (https://fontstruct.com/fontstructions/show/349277) by “Kelsey Higham”,
+which is licensed under a Creative Commons Attribution license
+(http://creativecommons.org/licenses/by/3.0/).

@@ -10,6 +10,7 @@
  * matching Platinum part. */
 
 #import "George.h"
+#import "George+Icons.h"
 #import "George+Menu.h"
 #import "George+Parts.h"
 #import "George+TabView.h"
@@ -46,6 +47,7 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
   // The checkbox, radio and arrow images are drawn on demand, so they can
   // only be registered once the theme is the current one.
   [self registerControlImages];
+  [self registerFileIcons];
 }
 
 /* Platinum puts every window and control on the same #DDDDDD gray, so the

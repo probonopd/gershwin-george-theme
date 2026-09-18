@@ -203,7 +203,13 @@ static void GeorgeDots(NSRect ref, CGFloat from, CGFloat to, CGFloat height)
 
       [style setLineBreakMode: NSLineBreakByClipping];
       attributes = @{
-        NSFontAttributeName: [NSFont systemFontOfSize: 12.0 * s],
+        // A floating window carries its title in the small system font, the
+        // way Platinum sets everything that sits in a narrow strip.
+        NSFontAttributeName: ((styleMask & NSUtilityWindowMask)
+                              ? [NSFont paletteFontOfSize:
+                                          METRICS_FONT_PLATINUM_EM * s]
+                              : [NSFont systemFontOfSize:
+                                          METRICS_FONT_PLATINUM_EM * s]),
         NSForegroundColorAttributeName:
           [NSColor colorWithCalibratedWhite: (active ? 0x00 : 0x88) / 255.0 alpha: 1.0],
         NSParagraphStyleAttributeName: style

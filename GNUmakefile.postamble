@@ -1,6 +1,15 @@
-# George draws its interface text in the Chicago Kare UI font (MIT, see
-# Resources/Fonts), which fontconfig only finds in the system font directory.
+# Copyright (c) 2026 Simon Peter
+#
+# SPDX-License-Identifier: BSD-2-Clause
+
+# George draws its interface text in the three bitmap faces below (their
+# licenses sit next to them in Resources/Fonts), which fontconfig only finds
+# in the system font directory.
+GEORGE_FONTS = ChicagoKare Geneva92 Monaco9
+
 after-install::
-	$(MKDIRS) $(DESTDIR)/System/Library/Fonts/ChicagoKare
-	$(INSTALL_DATA) Resources/Fonts/ChicagoKare-Regular.ttf $(DESTDIR)/System/Library/Fonts/ChicagoKare/
-	$(INSTALL_DATA) Resources/Fonts/ChicagoKare-LICENSE.txt $(DESTDIR)/System/Library/Fonts/ChicagoKare/
+	for font in $(GEORGE_FONTS); do \
+		$(MKDIRS) $(DESTDIR)/System/Library/Fonts/$$font; \
+		$(INSTALL_DATA) Resources/Fonts/$$font-* \
+			$(DESTDIR)/System/Library/Fonts/$$font/; \
+	done

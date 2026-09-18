@@ -2,6 +2,12 @@
 // AppearanceMetrics.h
 //
 // Global appearance metrics for the theme, following documented HIG values.
+//
+// Copyright (c) 2026 Simon Peter
+//
+// SPDX-License-Identifier: BSD-2-Clause
+//
+// Taken from gershwin-components, where this file is maintained.
 // These values MUST be used wherever possible, e.g., for alert panels, dialogs, and other window types.
 // Design rules are described in the comments of this file, they MUST be followed when creating or updating UI elements.
 // Do NOT hardcode any layout values in the code, use these constants or create additional ones here instead.
@@ -149,6 +155,10 @@ static const float METRICS_TITLEBAR_PLATINUM_TITLE_PAD = 3.0;      // Blank spac
 static const float METRICS_TITLEBAR_PLATINUM_RIDGE_TOP = 4.0;      // Title bar top to the first ridge
 static const int METRICS_TITLEBAR_PLATINUM_RIDGES = 6;             // Ridges are two pixels tall
 static const float METRICS_WINDOW_PLATINUM_BORDER = 6.0;           // Frame around the client, draggable on every side
+// The Platinum interface faces (Chicago 12, Geneva 9, Monaco 9) are bitmaps
+// built on an em of sixteen pixels; only whole multiples of it draw as the
+// bitmap rather than as a resampled blur
+static const float METRICS_FONT_PLATINUM_EM = 16.0;
 
 // Control Positioning in Dialogs
 // All spacing between dialog elements shall be a multiple of 2px (2, 4, 6, 8, 12, 16, 20, or 24).

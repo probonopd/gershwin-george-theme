@@ -122,6 +122,55 @@ static NSTextField *label(NSString *text, NSRect frame)
 
 @end
 
+/* The file icons the theme registers, laid out so the whole set can be seen
+ * at once. */
+@interface GalleryIcons : NSView
+@end
+
+@implementation GalleryIcons
+
+- (void)drawRect:(NSRect)dirtyRect
+{
+  NSArray *names = @[@"common_Folder", @"common_GSFolder", @"common_LibraryFolder",
+                     @"common_ApplicationFolder", @"common_DocsFolder",
+                     @"common_DownloadFolder", @"common_ImageFolder",
+                     @"common_MusicFolder", @"common_VideoFolder", @"common_Desktop",
+                     @"common_HomeDirectory", @"common_Home2_48", @"common_Home",
+                     @"common_RecyclerEmpty", @"common_RecyclerFull", @"common_Unknown",
+                     @"common_UnknownApplication", @"common_UnknownTool",
+                     @"common_MultipleSelection", @"common_Root_Apple",
+                     @"common_Root_PC", @"common_Tile"];
+  NSDictionary *label = @{ NSFontAttributeName: [NSFont labelFontOfSize: 0],
+                           NSForegroundColorAttributeName: [NSColor controlTextColor] };
+  NSUInteger columns = 6;
+  CGFloat cell = 108, row = 92;
+  NSUInteger i;
+
+  (void)dirtyRect;
+  for (i = 0; i < [names count]; i++)
+    {
+      NSString *name = [names objectAtIndex: i];
+      NSImage *icon = [NSImage imageNamed: name];
+      NSString *shown = [name hasPrefix: @"common_"]
+        ? [name substringFromIndex: 7] : name;
+      NSSize size = icon ? [icon size] : NSZeroSize;
+      CGFloat x = (i % columns) * cell;
+      CGFloat y = NSMaxY([self bounds]) - (i / columns + 1) * row;
+      NSSize text = [shown sizeWithAttributes: label];
+
+      if (icon != nil)
+        [icon drawAtPoint: NSMakePoint(round(x + (cell - size.width) / 2),
+                                       round(y + row - 16 - size.height))
+                 fromRect: NSZeroRect
+                operation: NSCompositeSourceOver
+                 fraction: 1.0];
+      [shown drawAtPoint: NSMakePoint(round(x + (cell - text.width) / 2), y)
+          withAttributes: label];
+    }
+}
+
+@end
+
 @implementation GalleryDelegate
 
 /* A menu bar and one open menu, so the menu artwork is on screen too. */
@@ -303,6 +352,21 @@ static NSTextField *label(NSString *text, NSRect frame)
                                     initWithFrame: NSMakeRect(20, 480, 580, 70)];
 
     [content addSubview: preview];
+  }
+
+  {
+    NSWindow *icons = [[NSWindow alloc]
+      initWithContentRect: NSMakeRect(0, 0, 668, 400)
+                styleMask: NSTitledWindowMask | NSClosableWindowMask
+                           | NSMiniaturizableWindowMask
+                  backing: NSBackingStoreBuffered
+                    defer: NO];
+    GalleryIcons *grid = [[GalleryIcons alloc]
+                           initWithFrame: NSMakeRect(10, 10, 648, 380)];
+
+    [icons setTitle: @"Icons"];
+    [[icons contentView] addSubview: grid];
+    [icons orderFront: nil];
   }
 
   [window center];

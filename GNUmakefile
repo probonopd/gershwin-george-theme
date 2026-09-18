@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Simon Peter
+#
+# SPDX-License-Identifier: BSD-2-Clause
+
 include $(GNUSTEP_MAKEFILES)/common.make
 
 GNUSTEP_INSTALLATION_DOMAIN = SYSTEM
@@ -13,6 +17,7 @@ George_PRINCIPAL_CLASS = George
 George_OBJC_FILES = \
 		George.m\
 		George+Frame.m\
+		George+Icons.m\
 		George+Menu.m\
 		George+Parts.m\
 		George+TabView.m\
