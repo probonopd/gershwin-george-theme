@@ -198,19 +198,13 @@ GEORGE_ICON(platinumDrawOtherVolume, GeorgeIconOtherDisk)
   for (i = 0; icons[i].name != NULL; i++)
     {
       NSString *name = [NSString stringWithUTF8String: icons[i].name];
-      NSImage *old = [NSImage imageNamed: name];
       NSSize size = NSMakeSize(icons[i].side, icons[i].side);
       NSImage *image;
-      NSString *registered;
 
       image = [self imageWithSize: size
                      drawSelector: NSSelectorFromString(
                        [NSString stringWithUTF8String: icons[i].selector])];
-      // The name belongs to the image that holds it, so it is copied before
-      // the old one is let go of.
-      registered = AUTORELEASE([([old name] ? [old name] : name) copy]);
-      [old setName: nil];
-      [image setName: registered];
+      GeorgeRegisterImage(image, name);
     }
 }
 

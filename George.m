@@ -38,6 +38,48 @@ BOOL GeorgeThemeIsActive(void)
   return gGeorgeActive;
 }
 
+/* The images this theme draws take over the names of the images that were
+ * there before, keyed by the name they took. */
+static NSMutableDictionary *gGeorgeReplacedImages = nil;
+
+void GeorgeRegisterImage(NSImage *image, NSString *name)
+{
+  NSImage *old = [NSImage imageNamed: name];
+  /* Several names can map onto one registered name (NSSwitch and
+   * common_SwitchOff both resolve to GSSwitch), so take the name the image is
+   * actually registered under; anything else is never found.  Copied, because
+   * unregistering the old image is what releases it, and the name belongs to
+   * it. */
+  NSString *registered = AUTORELEASE([([old name] ? [old name] : name) copy]);
+
+  if (gGeorgeReplacedImages == nil)
+    gGeorgeReplacedImages = [[NSMutableDictionary alloc] init];
+  /* Retained before the name is taken away, which is what would release it,
+   * and only the first time round: a second activation would otherwise record
+   * the drawing of the first one as the image to go back to. */
+  if (old != nil && [gGeorgeReplacedImages objectForKey: registered] == nil)
+    [gGeorgeReplacedImages setObject: old forKey: registered];
+  [old setName: nil];
+  [image setName: registered];
+}
+
+static void GeorgeRestoreReplacedImages(void)
+{
+  NSEnumerator *names = [gGeorgeReplacedImages keyEnumerator];
+  NSString *name;
+
+  while ((name = [names nextObject]) != nil)
+    {
+      NSImage *old = [gGeorgeReplacedImages objectForKey: name];
+      NSImage *mine = [NSImage imageNamed: name];
+
+      if (mine != nil && mine != old)
+        [mine setName: nil];
+      [old setName: name];
+    }
+  [gGeorgeReplacedImages removeAllObjects];
+}
+
 static BOOL GeorgeStateIsPressed(GSThemeControlState state)
 {
   return state == GSThemeHighlightedState
@@ -61,6 +103,7 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
 - (void)deactivate
 {
   gGeorgeActive = NO;
+  GeorgeRestoreReplacedImages();
   [super deactivate];
 }
 

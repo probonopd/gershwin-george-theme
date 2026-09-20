@@ -32,6 +32,13 @@ typedef NS_ENUM(NSInteger, GeorgeFrameEdge) {
  * -[George deactivate]. */
 BOOL GeorgeThemeIsActive(void);
 
+/* Register an image George drew under the name GNUstep looks it up by.  An
+ * NSImage name can be held by one image only, so the image that held it is
+ * kept and put back when the theme is deactivated - otherwise the name would
+ * point at a Platinum drawing for the rest of the process, whichever theme is
+ * current. */
+void GeorgeRegisterImage(NSImage *image, NSString *name);
+
 /* Window manager interface. The window manager draws title bars and window
  * borders itself and asks the current theme for the artwork by these
  * selectors, so their names are part of that contract. */

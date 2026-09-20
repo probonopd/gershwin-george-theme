@@ -374,15 +374,8 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
       NSSize size = old ? [old size] : NSMakeSize(18, 18);
       NSImage *image = [self imageWithSize: size
                                    drawSelector: [[drawing objectForKey: name] pointerValue]];
-      // Several names map onto one registered image name (NSSwitch and
-      // common_SwitchOff both resolve to GSSwitch), so take the name the
-      // image is actually registered under; anything else is never found.
-      // Copied, because unregistering the old image is what releases it, and
-      // the name belongs to it.
-      NSString *registered = AUTORELEASE([([old name] ? [old name] : name) copy]);
 
-      [old setName: nil];
-      [image setName: registered];
+      GeorgeRegisterImage(image, name);
     }
 }
 
