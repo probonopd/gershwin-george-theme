@@ -15,6 +15,7 @@
 #import <objc/runtime.h>
 
 #import "AppearanceMetrics.h"
+#import "George.h"
 
 /* Charcoal was the system font of Mac OS 8.5 and later, but it was cut to
  * Chicago's metrics and there is no liberally licensed revival of it, so
@@ -77,6 +78,11 @@ static NSFont *GeorgeFont(NSString *family, CGFloat size, NSFont *fallback)
 {
   NSFont *font;
 
+  /* These swizzles are installed for good when the bundle is loaded, so they
+   * keep running under whatever theme the user switches to next; the Platinum
+   * faces belong to this theme alone. */
+  if (!GeorgeThemeIsActive())
+    return fallback;
   if (!GeorgeFontFamilyAvailable(family))
     return fallback;
   if (size <= 0.0 && fallback != nil)

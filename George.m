@@ -31,6 +31,13 @@ static const CGFloat GeorgeScrollerWidth = 16.0;
 /* Thickness of the sunken track a linear slider runs in. */
 static const CGFloat GeorgeSliderTrackThickness = 6.0;
 
+static BOOL gGeorgeActive = NO;
+
+BOOL GeorgeThemeIsActive(void)
+{
+  return gGeorgeActive;
+}
+
 static BOOL GeorgeStateIsPressed(GSThemeControlState state)
 {
   return state == GSThemeHighlightedState
@@ -43,11 +50,18 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
 
 - (void)activate
 {
+  gGeorgeActive = YES;
   [super activate];
   // The checkbox, radio and arrow images are drawn on demand, so they can
   // only be registered once the theme is the current one.
   [self registerControlImages];
   [self registerFileIcons];
+}
+
+- (void)deactivate
+{
+  gGeorgeActive = NO;
+  [super deactivate];
 }
 
 /* Platinum puts every window and control on the same #DDDDDD gray, so the

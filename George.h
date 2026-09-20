@@ -24,6 +24,14 @@ typedef NS_ENUM(NSInteger, GeorgeFrameEdge) {
 @interface George : GSTheme
 @end
 
+/* The bundle's code cannot be unloaded once the theme has been loaded, and the
+ * +load swizzles in NSFont+George.m stay installed for the life of the
+ * process.  They ask this before answering with a Platinum face and otherwise
+ * hand back what GNUstep resolved, so another theme can take over without
+ * George's typography leaking into it.  Set by -[George activate], cleared by
+ * -[George deactivate]. */
+BOOL GeorgeThemeIsActive(void);
+
 /* Window manager interface. The window manager draws title bars and window
  * borders itself and asks the current theme for the artwork by these
  * selectors, so their names are part of that contract. */
