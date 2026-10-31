@@ -17,14 +17,14 @@
 
 - (CGFloat)windowFrameBorderWidth
 {
-  return 3.0 * GeorgeUnit();
+  return 2.0 * GeorgeUnit();
 }
 
 - (NSColor *)windowFrameBorderColorAtDepth:(NSInteger)depth
                                        edge:(NSInteger)edge
                                      active:(BOOL)active
 {
-  static const NSInteger lit[] = { 0x00, 0x6A, 0x8E, 0xB1, 0xD3, 0x00 };
+  static const NSInteger lit[] = { 0x00, 0x4D, 0x72, 0x96, 0xB8, 0x00 };
   CGFloat s = GeorgeUnit();
   NSInteger line = (NSInteger)floor(depth / s);
   NSInteger count = sizeof(lit) / sizeof(lit[0]);

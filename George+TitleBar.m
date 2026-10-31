@@ -13,8 +13,6 @@
 #import "GeorgePlatinum.h"
 #import "AppearanceMetrics.h"
 
-/* The window manager draws title bars in device pixels, so one Platinum pixel
- * is GeorgeUnit() device pixels here. */
 static void OpenLookFill(NSRect ref, CGFloat x, CGFloat y, CGFloat w, CGFloat h,
                          NSInteger gray)
 {
@@ -86,7 +84,6 @@ static NSString *GeorgeFittingTitle(NSString *title, NSDictionary *attributes,
       OpenLookFill(rect, 0, 0, 1, h, 0x6F);
       OpenLookFill(rect, w - 1, 0, 1, h, 0x88);
       OpenLookFill(rect, 0, h - 1, w, 1, 0x88);
-      /* Blue accent band across the top edge. */
       OpenLookFill(rect, 0, h - 2, w, 1, 0x3D);
     }
   else
@@ -177,27 +174,22 @@ static NSString *GeorgeFittingTitle(NSString *title, NSDictionary *attributes,
             pressed:(BOOL)pressed
 {
   NSInteger i, j;
-  NSColor *face = pressed ? GeorgeGray(0xCC) : GeorgeSchemeColor(6);
   NSColor *outline = GeorgeGray(0x5E);
 
   OpenLookFill(slot, 0, 0, NSWidth(slot), NSHeight(slot), 0xDF);
+
   for (j = 0; j < 10; j++)
     {
       for (i = 0; i < 10; i++)
         {
           CGFloat x = i, y = j;
           if (x < 1 || y < 1 || x > NSWidth(slot) - 2 || y > NSHeight(slot) - 2)
-            {
-              OpenLookFill(slot, x, y, 1, 1, 0x6F);
-            }
+            OpenLookFill(slot, x, y, 1, 1, 0x6F);
           else
-            {
-              OpenLookFill(slot, x, y, 1, 1, 0xF4);
-            }
+            OpenLookFill(slot, x, y, 1, 1, 0xF4);
         }
     }
 
-  OpenLookFill(slot, 1, 1, NSWidth(slot) - 2, NSHeight(slot) - 2, 0xF4);
   OpenLookFill(slot, 0, 0, NSWidth(slot), 1, outline);
   OpenLookFill(slot, 0, 0, 1, NSHeight(slot), outline);
   OpenLookFill(slot, NSWidth(slot) - 1, 0, 1, NSHeight(slot), outline);
@@ -206,16 +198,16 @@ static NSString *GeorgeFittingTitle(NSString *title, NSDictionary *attributes,
   switch (button)
     {
       case GeorgeWidgetZoom:
-        OpenLookFill(slot, 3, 3, 5, 5, GeorgeGray(0x33));
+        OpenLookFill(slot, 3, 3, 5, 5, 0x33);
         break;
       case GeorgeWidgetCollapse:
-        OpenLookFill(slot, 3, 5, 6, 1, GeorgeGray(0x33));
+        OpenLookFill(slot, 3, 5, 6, 1, 0x33);
         break;
       case GeorgeWidgetClose:
-        OpenLookFill(slot, 3, 3, 1, 5, GeorgeGray(0x33));
-        OpenLookFill(slot, 7, 3, 1, 5, GeorgeGray(0x33));
-        OpenLookFill(slot, 3, 3, 5, 1, GeorgeGray(0x33));
-        OpenLookFill(slot, 3, 7, 5, 1, GeorgeGray(0x33));
+        OpenLookFill(slot, 3, 3, 1, 5, 0x33);
+        OpenLookFill(slot, 7, 3, 1, 5, 0x33);
+        OpenLookFill(slot, 3, 3, 5, 1, 0x33);
+        OpenLookFill(slot, 3, 7, 5, 1, 0x33);
         break;
     }
 }
