@@ -134,9 +134,9 @@ static inline void GSWScaleFactorInvalidate(void) {
 #define METRICS_TITLEBAR_CORNER_RADIUS_PX (METRICS_TITLEBAR_CORNER_RADIUS * GSWScaleFactor())
 
 // Window corner radii for rounded corners
-static const float METRICS_TITLEBAR_CORNER_RADIUS = 7.0;  // Optically matches Menu app corner radius
+static const float METRICS_TITLEBAR_CORNER_RADIUS = 2.0;  // OpenLook is flatter and less rounded
 static const float METRICS_WINDOW_BOTTOM_CORNER_RADIUS = 0.0;
-static const float METRICS_TITLEBAR_HEIGHT = 22.0;
+static const float METRICS_TITLEBAR_HEIGHT = 18.0;
 // TODO: Remove the following 2 lines once WindowManager has been updated
 static const float METRICS_TITLEBAR_EDGE_BUTTON_WIDTH = 22.0;      // TODO: Remove
 static const float METRICS_TITLEBAR_RIGHT_REGION_WIDTH = 44.0;     // TODO: Remove
@@ -158,11 +158,11 @@ static const float METRICS_TITLEBAR_PLATINUM_GAP = 4.0;            // Blank spac
 static const float METRICS_TITLEBAR_PLATINUM_TITLE_PAD = 3.0;      // Blank space each side of the title
 static const float METRICS_TITLEBAR_PLATINUM_RIDGE_TOP = 4.0;      // Title bar top to the first ridge
 static const int METRICS_TITLEBAR_PLATINUM_RIDGES = 6;             // Ridges are two pixels tall
-static const float METRICS_WINDOW_PLATINUM_BORDER = 6.0;           // Frame around the client, draggable on every side
+static const float METRICS_WINDOW_PLATINUM_BORDER = 4.0;           // Frame around the client, lighter and less heavy
 // The Platinum interface faces (Chicago 12, Geneva 9, Monaco 9) are bitmaps
 // built on an em of sixteen pixels; only whole multiples of it draw as the
 // bitmap rather than as a resampled blur
-static const float METRICS_FONT_PLATINUM_EM = 16.0;
+static const float METRICS_FONT_PLATINUM_EM = 12.0;
 
 // Control Positioning in Dialogs
 // All spacing between dialog elements shall be a multiple of 2px (2, 4, 6, 8, 12, 16, 20, or 24).

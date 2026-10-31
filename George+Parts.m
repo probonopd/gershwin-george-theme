@@ -25,37 +25,33 @@ static const CGFloat GeorgeBoxSize = 12.0;
 @implementation George (Parts)
 
 - (void)drawPushButtonInRect:(NSRect)frame
-                          flipped:(BOOL)flipped
-                          pressed:(BOOL)pressed
-                          enabled:(BOOL)enabled
+                           flipped:(BOOL)flipped
+                           pressed:(BOOL)pressed
+                           enabled:(BOOL)enabled
 {
   NSRect r = NSIntegralRect(frame);
   CGFloat w = NSWidth(r);
   CGFloat h = NSHeight(r);
-  NSColor *face = GeorgeGray(pressed ? 0x66 : 0xDD);
-  NSColor *edge = GeorgeGray(enabled ? 0x00 : 0x88);
-  NSColor *corner = GeorgeGray(enabled ? 0x22 : 0x88);
+  NSColor *face = GeorgeGray(pressed ? 0xCC : 0xF1);
+  NSColor *edge = GeorgeGray(enabled ? 0x4D : 0x88);
+  NSColor *shadow = GeorgeGray(pressed ? 0x88 : 0xAF);
+  NSColor *highlight = GeorgeGray(pressed ? 0xD9 : 0xFF);
 
   if (w < 8 || h < 8)
     return;
 
 #define FILL(x_, y_, w_, h_, c) GeorgeFill(r, flipped, 1, x_, y_, w_, h_, c)
-  FILL(1, 1, w - 2, h - 2, face);
+  FILL(0, 0, w, h, face);
+  FILL(0, 0, w, 1, edge);
+  FILL(0, h - 1, w, 1, shadow);
+  FILL(0, 0, 1, h, edge);
+  FILL(w - 1, 0, 1, h, shadow);
 
-  // Outline: square with the corners cut back one pixel per row, the way a
-  // four pixel radius comes out in Platinum.
-  FILL(3, 0, w - 6, 1, edge);
-  FILL(3, h - 1, w - 6, 1, edge);
-  FILL(0, 3, 1, h - 6, edge);
-  FILL(w - 1, 3, 1, h - 6, edge);
-  FILL(1, 1, 2, 1, edge);      FILL(w - 3, 1, 2, 1, edge);
-  FILL(1, h - 2, 2, 1, edge);  FILL(w - 3, h - 2, 2, 1, edge);
-  FILL(1, 2, 1, 1, edge);      FILL(w - 2, 2, 1, 1, edge);
-  FILL(1, h - 3, 1, 1, edge);  FILL(w - 2, h - 3, 1, 1, edge);
-  FILL(2, 0, 1, 1, corner);    FILL(w - 3, 0, 1, 1, corner);
-  FILL(0, 2, 1, 1, corner);    FILL(w - 1, 2, 1, 1, corner);
-  FILL(2, h - 1, 1, 1, corner); FILL(w - 3, h - 1, 1, 1, corner);
-  FILL(0, h - 3, 1, 1, corner); FILL(w - 1, h - 3, 1, 1, corner);
+  FILL(1, 1, w - 2, h - 2, face);
+  FILL(1, 1, w - 2, 1, highlight);
+  FILL(1, 1, 1, h - 2, highlight);
+  FILL(2, h - 2, w - 3, 1, shadow);
+  FILL(w - 2, 2, 1, h - 3, shadow);
 
   // A disabled button is just the gray outline on the face, with no bevel.
   if (!enabled)
@@ -63,41 +59,20 @@ static const CGFloat GeorgeBoxSize = 12.0;
       return;
     }
 
-  // Two bevel rings inside the outline: lit from the top left when the
-  // button is up, sunken when it is pressed.
-  NSColor *outerLight = GeorgeGray(pressed ? 0x44 : 0xDD);
-  NSColor *outerShade = GeorgeGray(pressed ? 0x88 : 0x77);
-  NSColor *innerLight = GeorgeGray(pressed ? 0x55 : 0xFF);
-  NSColor *innerShade = GeorgeGray(pressed ? 0x77 : 0xAA);
-
-  FILL(3, 1, w - 6, 1, outerLight);
-  FILL(1, 3, 1, h - 6, outerLight);
-  FILL(3, h - 2, w - 6, 1, outerShade);
-  FILL(w - 2, 3, 1, h - 6, outerShade);
-  FILL(2, 2, w - 5, 1, innerLight);
-  FILL(2, 3, 1, h - 6, innerLight);
-  // The lit corner belongs to the outer ring once the bevel is sunken.
-  FILL(3, 3, 1, 1, pressed ? outerLight : innerLight);
-  FILL(3, h - 3, w - 6, 1, innerShade);
-  FILL(w - 3, 3, 1, h - 6, innerShade);
-  FILL(w - 4, h - 4, 1, 1, innerShade);
-  // Where the cut corners meet the bevel the outline stays black, the bevel
-  // gives way to the face, and the shadow turns the bottom right corner.
-  FILL(w - 2, 1, 1, 1, edge);
-  FILL(1, h - 2, 1, 1, edge);
-  FILL(w - 3, 2, 1, 1, face);
-  FILL(2, h - 3, 1, 1, face);
-  FILL(w - 3, h - 3, 1, 1, outerShade);
+  FILL(2, 2, w - 4, 1, highlight);
+  FILL(2, 2, 1, h - 4, highlight);
+  FILL(3, h - 3, w - 5, 1, shadow);
+  FILL(w - 3, 3, 1, h - 5, shadow);
 #undef FILL
 }
 
 #pragma mark - Scroll bars
 
 - (void)drawScrollArrowInRect:(NSRect)frame
-                           flipped:(BOOL)flipped
-                         direction:(NSInteger)direction
-                           pressed:(BOOL)pressed
-                           enabled:(BOOL)enabled
+                            flipped:(BOOL)flipped
+                          direction:(NSInteger)direction
+                            pressed:(BOOL)pressed
+                            enabled:(BOOL)enabled
 {
   NSRect r = NSIntegralRect(frame);
   CGFloat w = NSWidth(r), h = NSHeight(r);
@@ -131,8 +106,8 @@ static const CGFloat GeorgeBoxSize = 12.0;
 }
 
 - (void)drawScrollKnobInRect:(NSRect)frame
-                          flipped:(BOOL)flipped
-                       horizontal:(BOOL)horizontal
+                           flipped:(BOOL)flipped
+                        horizontal:(BOOL)horizontal
 {
   NSRect r = NSIntegralRect(frame);
   CGFloat w = NSWidth(r), h = NSHeight(r);
@@ -172,8 +147,8 @@ static const CGFloat GeorgeBoxSize = 12.0;
 }
 
 - (void)drawScrollSlotInRect:(NSRect)frame
-                          flipped:(BOOL)flipped
-                       horizontal:(BOOL)horizontal
+                           flipped:(BOOL)flipped
+                        horizontal:(BOOL)horizontal
 {
   NSRect r = NSIntegralRect(frame);
   CGFloat w = NSWidth(r), h = NSHeight(r);
@@ -344,7 +319,7 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 - (NSImage *)imageWithSize:(NSSize)size drawSelector:(SEL)selector
 {
   NSCustomImageRep *rep = [[NSCustomImageRep alloc] initWithDrawSelector: selector
-                                                                delegate: self];
+                                                                 delegate: self];
   NSImage *image = [[NSImage alloc] initWithSize: size];
 
   [rep setSize: size];
@@ -422,9 +397,9 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 }
 
 - (void)drawBevelButtonInRect:(NSRect)frame
-                           flipped:(BOOL)flipped
-                           pressed:(BOOL)pressed
-                           enabled:(BOOL)enabled
+                            flipped:(BOOL)flipped
+                            pressed:(BOOL)pressed
+                            enabled:(BOOL)enabled
 {
   NSRect r = NSIntegralRect(frame);
   CGFloat w = NSWidth(r), h = NSHeight(r);

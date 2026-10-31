@@ -12,7 +12,7 @@
 CGFloat GSWScaleFactorValue = 0;
 
 void GeorgeFill(NSRect ref, BOOL flipped, CGFloat unit,
-                CGFloat x, CGFloat y, CGFloat w, CGFloat h, NSColor *color)
+                 CGFloat x, CGFloat y, CGFloat w, CGFloat h, NSColor *color)
 {
   CGFloat left = round(NSMinX(ref) + x * unit);
   CGFloat right = round(NSMinX(ref) + (x + w) * unit);
@@ -46,20 +46,18 @@ CGFloat GeorgeUnit(void)
   return MAX(1.0, round(scale));
 }
 
-/* Aaron's scheme color tables, clut -10206 to -10199. */
+/* OpenLook-inspired palette: cool steel grays, muted teal-blue accents, and
+ * light ivory surfaces, rather than the warm Platinum color set. */
 static NSString *const GeorgeSchemeNames[] = {
-  @"lavender", @"gold", @"emerald", @"turquoise",
-  @"crimson", @"magenta", @"sapphire", @"silver"
+  @"openlook", @"openlook-ivory", @"openlook-ink"
 };
 static const unsigned int GeorgeSchemes[][9] = {
-  { 0x000000, 0x000055, 0x333399, 0x6666CC, 0x9999FF, 0xCCCCFF, 0xEEEEEE, 0xFFFFFF, 0x000088 },
-  { 0x000000, 0x550000, 0x996600, 0xCC9900, 0xFFCC66, 0xFFFF66, 0xFFFFCC, 0xFFFFFF, 0x663300 },
-  { 0x000000, 0x002200, 0x006633, 0x339966, 0x33CC66, 0x66FF99, 0xCCFFCC, 0xFFFFFF, 0x004400 },
-  { 0x000000, 0x002200, 0x006666, 0x009999, 0x00CC99, 0x66FFCC, 0xCCFFFF, 0xFFFFFF, 0x003333 },
-  { 0x000000, 0x440000, 0x990000, 0xCC3333, 0xFF6666, 0xFF9999, 0xFFCCCC, 0xFFFFFF, 0x770000 },
-  { 0x000000, 0x220000, 0x660066, 0x993399, 0xCC66CC, 0xFF99FF, 0xFFCCFF, 0xFFFFFF, 0x330033 },
-  { 0x000000, 0x000077, 0x0033CC, 0x3366FF, 0x6699FF, 0x99CCFF, 0xEEEEEE, 0xFFFFFF, 0x003399 },
-  { 0x000000, 0x222222, 0x555555, 0x777777, 0xAAAAAA, 0xDDDDDD, 0xEEEEEE, 0xFFFFFF, 0x333333 }
+  /* openlook */
+  { 0x000000, 0x21313d, 0x38566b, 0x4d7082, 0x6d90a3, 0x9bb2bf, 0xdfe7eb, 0xFFFFFF, 0x2a495d },
+  /* openlook-ivory */
+  { 0x000000, 0x4b4b49, 0x7c7d7a, 0x9aa1a0, 0xc0c6c5, 0xe3e7e6, 0xf4f4f1, 0xFFFFFF, 0x5d5d5a },
+  /* openlook-ink */
+  { 0x000000, 0x1d2430, 0x243a4b, 0x3a5d75, 0x62879a, 0x8aa7b5, 0xdde7ed, 0xFFFFFF, 0x233547 }
 };
 
 NSColor *GeorgeSchemeColor(NSInteger index)
