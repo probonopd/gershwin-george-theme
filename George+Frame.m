@@ -17,18 +17,14 @@
 
 - (CGFloat)windowFrameBorderWidth
 {
-  return METRICS_WINDOW_PLATINUM_BORDER * GeorgeUnit();
+  return 3.0 * GeorgeUnit();
 }
 
 - (NSColor *)windowFrameBorderColorAtDepth:(NSInteger)depth
-                                      edge:(NSInteger)edge
-                                    active:(BOOL)active
+                                       edge:(NSInteger)edge
+                                     active:(BOOL)active
 {
-  // Outside in: outline, lit face, two filler lines, shaded face, the line
-  // against the client. The left side is lit on its outer face, the right
-  // and bottom sides on their inner face, because the light comes from the
-  // top left.
-  static const NSInteger lit[] = { 0x00, 0xFF, 0xCC, 0xCC, 0x99, 0x00 };
+  static const NSInteger lit[] = { 0x00, 0x6A, 0x8E, 0xB1, 0xD3, 0x00 };
   CGFloat s = GeorgeUnit();
   NSInteger line = (NSInteger)floor(depth / s);
   NSInteger count = sizeof(lit) / sizeof(lit[0]);
@@ -37,9 +33,10 @@
     line = 0;
   if (line >= count)
     line = count - 1;
-  // An inactive Platinum window frame is flat gray with a lighter outline.
+
   if (!active)
-    return GeorgeGray((line == 0 || line == count - 1) ? 0x55 : 0xDD);
+    return GeorgeGray((line == 0 || line == count - 1) ? 0x99 : 0xC7);
+
   if (edge != GeorgeFrameEdgeLeft && line > 0 && line < count - 1)
     return GeorgeGray(lit[count - 1 - line]);
   return GeorgeGray(lit[line]);

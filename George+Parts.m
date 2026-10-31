@@ -32,10 +32,10 @@ static const CGFloat GeorgeBoxSize = 12.0;
   NSRect r = NSIntegralRect(frame);
   CGFloat w = NSWidth(r);
   CGFloat h = NSHeight(r);
-  NSColor *face = GeorgeGray(pressed ? 0xCC : 0xF1);
-  NSColor *edge = GeorgeGray(enabled ? 0x4D : 0x88);
-  NSColor *shadow = GeorgeGray(pressed ? 0x88 : 0xAF);
-  NSColor *highlight = GeorgeGray(pressed ? 0xD9 : 0xFF);
+  NSColor *face = GeorgeGray(pressed ? 0xD7 : 0xF1);
+  NSColor *edge = GeorgeGray(enabled ? 0x6B : 0x88);
+  NSColor *shadow = GeorgeGray(pressed ? 0x9A : 0xBB);
+  NSColor *highlight = GeorgeGray(pressed ? 0xF7 : 0xFF);
 
   if (w < 8 || h < 8)
     return;
@@ -53,11 +53,8 @@ static const CGFloat GeorgeBoxSize = 12.0;
   FILL(2, h - 2, w - 3, 1, shadow);
   FILL(w - 2, 2, 1, h - 3, shadow);
 
-  // A disabled button is just the gray outline on the face, with no bevel.
   if (!enabled)
-    {
-      return;
-    }
+    return;
 
   FILL(2, 2, w - 4, 1, highlight);
   FILL(2, 2, 1, h - 4, highlight);
@@ -76,23 +73,22 @@ static const CGFloat GeorgeBoxSize = 12.0;
 {
   NSRect r = NSIntegralRect(frame);
   CGFloat w = NSWidth(r), h = NSHeight(r);
-  NSColor *face = GeorgeGray(pressed ? 0x77 : 0xDD);
-  NSColor *light = GeorgeGray(pressed ? 0x55 : 0xFF);
-  NSColor *shade = GeorgeGray(pressed ? 0x99 : 0xAA);
-  NSColor *glyph = GeorgeGray(enabled ? 0x00 : 0x77);
+  NSColor *face = GeorgeGray(pressed ? 0xD9 : 0xEB);
+  NSColor *edge = GeorgeGray(enabled ? 0x74 : 0x99);
+  NSColor *glyph = GeorgeGray(enabled ? 0x11 : 0x77);
   CGFloat cx = floor(w / 2.0), cy = floor(h / 2.0);
   NSInteger i;
 
   if (w < 6 || h < 6)
     return;
-  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(0x00));
-  GeorgeFill(r, flipped, 1, 1, 1, w - 2, h - 2, face);
-  GeorgeFill(r, flipped, 1, 1, 1, w - 3, 1, light);
-  GeorgeFill(r, flipped, 1, 1, 1, 1, h - 3, light);
-  GeorgeFill(r, flipped, 1, 2, h - 2, w - 3, 1, shade);
-  GeorgeFill(r, flipped, 1, w - 2, 2, 1, h - 3, shade);
 
-  // Solid triangle, two pixels taller on each step.
+  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(0xF4));
+  GeorgeFill(r, flipped, 1, 1, 1, w - 2, h - 2, face);
+  GeorgeFill(r, flipped, 1, 1, 1, w - 2, 1, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 1, 1, 1, h - 2, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 1, h - 2, w - 2, 1, edge);
+  GeorgeFill(r, flipped, 1, w - 2, 1, 1, h - 2, edge);
+
   for (i = 0; i < 4; i++)
     {
       switch (direction)
@@ -115,33 +111,25 @@ static const CGFloat GeorgeBoxSize = 12.0;
 
   if (w < 6 || h < 6)
     return;
-  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(0x00));
-  GeorgeFill(r, flipped, 1, 1, 1, w - 2, h - 2, GeorgeSchemeColor(4));
-  GeorgeFill(r, flipped, 1, 1, 1, w - 3, 1, GeorgeSchemeColor(5));
-  GeorgeFill(r, flipped, 1, 1, 1, 1, h - 3, GeorgeSchemeColor(5));
-  GeorgeFill(r, flipped, 1, 2, h - 2, w - 3, 1, GeorgeSchemeColor(3));
-  GeorgeFill(r, flipped, 1, w - 2, 2, 1, h - 3, GeorgeSchemeColor(3));
 
-  // Four grip lines across the middle, each lit on its light side.
-  for (i = 0; i < 4; i++)
+  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(0xE7));
+  GeorgeFill(r, flipped, 1, 1, 1, w - 2, h - 2, GeorgeSchemeColor(6));
+  GeorgeFill(r, flipped, 1, 1, 1, w - 2, 1, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 1, 1, 1, h - 2, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 1, h - 2, w - 2, 1, GeorgeGray(0x9A));
+  GeorgeFill(r, flipped, 1, w - 2, 1, 1, h - 2, GeorgeGray(0x9A));
+
+  for (i = 0; i < 3; i++)
     {
       if (horizontal)
         {
-          CGFloat x = floor(w / 2.0) - 4 + i * 2;
-
-          if (x < 4 || x > w - 5)
-            continue;
-          GeorgeFill(r, flipped, 1, x, 4, 1, h - 8, GeorgeSchemeColor(2));
-          GeorgeFill(r, flipped, 1, x - 1, 4, 1, h - 8, GeorgeSchemeColor(6));
+          CGFloat x = floor(w / 2.0) - 3 + i * 2;
+          GeorgeFill(r, flipped, 1, x, 4, 1, h - 8, GeorgeSchemeColor(3));
         }
       else
         {
-          CGFloat y = floor(h / 2.0) - 4 + i * 2;
-
-          if (y < 4 || y > h - 5)
-            continue;
-          GeorgeFill(r, flipped, 1, 4, y, w - 8, 1, GeorgeSchemeColor(2));
-          GeorgeFill(r, flipped, 1, 4, y - 1, w - 8, 1, GeorgeSchemeColor(6));
+          CGFloat y = floor(h / 2.0) - 3 + i * 2;
+          GeorgeFill(r, flipped, 1, 4, y, w - 8, 1, GeorgeSchemeColor(3));
         }
     }
 }
@@ -153,42 +141,34 @@ static const CGFloat GeorgeBoxSize = 12.0;
   NSRect r = NSIntegralRect(frame);
   CGFloat w = NSWidth(r), h = NSHeight(r);
 
-  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(0xCC));
-  // The track keeps the black edges the arrow buttons have on their long sides.
+  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(0xD7));
   if (horizontal)
     {
-      GeorgeFill(r, flipped, 1, 0, 0, w, 1, GeorgeGray(0x00));
-      GeorgeFill(r, flipped, 1, 0, h - 1, w, 1, GeorgeGray(0x00));
+      GeorgeFill(r, flipped, 1, 0, 0, w, 1, GeorgeGray(0x88));
+      GeorgeFill(r, flipped, 1, 0, h - 1, w, 1, GeorgeGray(0x9A));
     }
   else
     {
-      GeorgeFill(r, flipped, 1, 0, 0, 1, h, GeorgeGray(0x00));
-      GeorgeFill(r, flipped, 1, w - 1, 0, 1, h, GeorgeGray(0x00));
+      GeorgeFill(r, flipped, 1, 0, 0, 1, h, GeorgeGray(0x88));
+      GeorgeFill(r, flipped, 1, w - 1, 0, 1, h, GeorgeGray(0x9A));
     }
 }
 
 #pragma mark - Checkbox and radio artwork
 
-/* The pixels of the twelve pixel disc a radio button is, as the first and
- * last column of each of its rows. */
 static const NSInteger GeorgeDisc[12][2] = {
   {4, 7}, {2, 9}, {1, 10}, {1, 10}, {0, 11}, {0, 11},
   {0, 11}, {0, 11}, {1, 10}, {1, 10}, {2, 9}, {4, 7}
 };
 
-/* Platinum lights a radio button like a sphere: brightest along the band
- * just above its centre, falling away towards the bottom right. */
 static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 {
   NSInteger step = (x + y - 6) / 2;
-
   if (step <= 0)
     return 0xFF;
   return MAX(0x88, 0xFF - 0x11 * step);
 }
 
-/* Sunken well the checkbox and radio sit in: black edge, light top left,
- * dark bottom right, on the control gray. */
 - (void)drawBoxWellInRect:(NSRect)box oval:(BOOL)oval
 {
   CGFloat s = GeorgeBoxSize;
@@ -206,56 +186,44 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
                           || x < GeorgeDisc[y + 1][0] || x > GeorgeDisc[y + 1][1]);
 
               GeorgeFill(box, NO, 1, x, y, 1, 1,
-                                GeorgeGray(rim ? 0x00 : GeorgeDiscGray(x, y)));
+                                GeorgeGray(rim ? 0x6B : GeorgeDiscGray(x, y)));
             }
         }
       return;
     }
 
   GeorgeFill(box, NO, 1, 0, 0, s, s, GeorgeGray(0x00));
-  GeorgeFill(box, NO, 1, 1, 1, s - 2, s - 2, GeorgeGray(0xDD));
-  GeorgeFill(box, NO, 1, 1, 1, s - 3, 1, GeorgeGray(0xFF));
-  GeorgeFill(box, NO, 1, 1, 1, 1, s - 3, GeorgeGray(0xFF));
-  GeorgeFill(box, NO, 1, 2, s - 2, s - 3, 1, GeorgeGray(0x88));
-  GeorgeFill(box, NO, 1, s - 2, 2, 1, s - 3, GeorgeGray(0x88));
+  GeorgeFill(box, NO, 1, 1, 1, s - 2, s - 2, GeorgeGray(0xF0));
+  GeorgeFill(box, NO, 1, 1, 1, s - 2, 1, GeorgeGray(0xFF));
+  GeorgeFill(box, NO, 1, 1, 1, 1, s - 2, GeorgeGray(0xFF));
+  GeorgeFill(box, NO, 1, 2, s - 2, s - 3, 1, GeorgeGray(0x8A));
+  GeorgeFill(box, NO, 1, s - 2, 2, 1, s - 3, GeorgeGray(0x8A));
 }
 
-/* The mark of a chosen radio button: the middle of the disc, three rows in. */
 - (void)drawDiscMarkInRect:(NSRect)box
 {
   NSInteger y;
 
   for (y = 3; y < 9; y++)
-    GeorgeFill(box, NO, 1, GeorgeDisc[y][0] + 3, y,
-                      GeorgeDisc[y][1] - GeorgeDisc[y][0] - 5, 1,
+    GeorgeFill(box, NO, 1, GeorgeDisc[y][0] + 2, y,
+                      GeorgeDisc[y][1] - GeorgeDisc[y][0] - 3, 1,
                       GeorgeGray(0x00));
 }
 
-/* Platinum check mark: a short stroke down to the foot and a long one up to
- * the right, embossed with a lighter copy one pixel down and right. It leans
- * past the top right corner of the box, the way Platinum's does. */
 - (void)drawCheckMarkInRect:(NSRect)box
 {
-  static const CGFloat strokes[][3] = {          /* x, y, width */
-    {2, 5, 2}, {3, 6, 2}, {4, 7, 2}, {5, 8, 1}, {6, 7, 1},
+  static const CGFloat strokes[][3] = {
+    {2, 6, 2}, {3, 7, 2}, {4, 8, 2}, {5, 8, 1}, {6, 7, 1},
     {6, 6, 2}, {7, 5, 2}, {8, 4, 2}, {9, 3, 2}, {10, 2, 2}
   };
   const NSUInteger count = sizeof(strokes) / sizeof(strokes[0]);
   NSUInteger i;
 
   for (i = 0; i < count; i++)
-    GeorgeFill(box, NO, 1, strokes[i][0] + 1, strokes[i][1] + 1,
-                      strokes[i][2], 1, GeorgeGray(0xAA));
-  // The emboss leans out over the box outline, which stays unbroken.
-  GeorgeFill(box, NO, 1, NSWidth(box) - 1, 1, 1, NSHeight(box) - 2,
-                    GeorgeGray(0x00));
-  for (i = 0; i < count; i++)
     GeorgeFill(box, NO, 1, strokes[i][0], strokes[i][1],
                       strokes[i][2], 1, GeorgeGray(0x00));
 }
 
-/* Platinum arrows for popup buttons and submenus: a solid triangle that
- * grows two pixels per step, the same shape as the scroll bar arrows. */
 - (void)drawArrowInRep:(id)rep direction:(NSInteger)direction
 {
   NSSize size = [rep size];
@@ -289,7 +257,6 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 - (void)platinumDrawSwitchOn:(id)rep
 {
   NSRect box = [self boxRectForRep: rep];
-
   [self drawBoxWellInRect: box oval: NO];
   [self drawCheckMarkInRect: box];
 }
@@ -302,7 +269,6 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 - (void)platinumDrawRadioOn:(id)rep
 {
   NSRect box = [self boxRectForRep: rep];
-
   [self drawBoxWellInRect: box oval: YES];
   [self drawDiscMarkInRect: box];
 }
@@ -310,7 +276,6 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 - (NSRect)boxRectForRep:(id)rep
 {
   NSSize size = [rep size];
-
   return NSMakeRect(round((size.width - GeorgeBoxSize) / 2.0),
                     round((size.height - GeorgeBoxSize) / 2.0),
                     GeorgeBoxSize, GeorgeBoxSize);
@@ -360,16 +325,16 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 {
   NSGraphicsContext *context = [NSGraphicsContext currentContext];
   BOOL antialias = [context shouldAntialias];
-  // Stroked on the pixel centre so the three pixel line lands on whole pixels.
   NSRect r = NSInsetRect(NSIntegralRect(frame), 1.5, 1.5);
   NSBezierPath *ring;
 
   if (NSWidth(r) < 8 || NSHeight(r) < 8)
     return;
-  ring = [NSBezierPath bezierPathWithRoundedRect: r xRadius: 6.0 yRadius: 6.0];
+
+  ring = [NSBezierPath bezierPathWithRoundedRect: r xRadius: 4.0 yRadius: 4.0];
   [context setShouldAntialias: NO];
-  [GeorgeGray(0x00) set];
-  [ring setLineWidth: 3.0];
+  [GeorgeGray(0x60) set];
+  [ring setLineWidth: 2.0];
   [ring stroke];
   [context setShouldAntialias: antialias];
 }
@@ -378,21 +343,16 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 {
   NSRect r = NSIntegralRect(frame);
   CGFloat w = NSWidth(r), h = NSHeight(r);
-  NSColor *edge = GeorgeGray(0x00);
+  NSColor *edge = GeorgeGray(0x60);
 
   if (w < 12 || h < 12)
     return;
-  // A second outline one pixel inside the first, following the same cut
-  // corners, so the button reads as the default one without growing.
+
 #define EDGE(x_, y_, w_, h_) GeorgeFill(r, flipped, 1, x_, y_, w_, h_, edge)
-  EDGE(3, 1, w - 6, 1);
-  EDGE(3, h - 2, w - 6, 1);
-  EDGE(1, 3, 1, h - 6);
-  EDGE(w - 2, 3, 1, h - 6);
-  EDGE(2, 2, 1, 1);
-  EDGE(w - 3, 2, 1, 1);
-  EDGE(2, h - 3, 1, 1);
-  EDGE(w - 3, h - 3, 1, 1);
+  EDGE(1, 1, w - 2, 1);
+  EDGE(1, h - 2, w - 2, 1);
+  EDGE(1, 1, 1, h - 2);
+  EDGE(w - 2, 1, 1, h - 2);
 #undef EDGE
 }
 
@@ -403,34 +363,24 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 {
   NSRect r = NSIntegralRect(frame);
   CGFloat w = NSWidth(r), h = NSHeight(r);
-  NSColor *face = GeorgeGray(pressed ? 0x66 : 0xDD);
-  NSColor *edge = GeorgeGray(enabled ? 0x00 : 0x88);
-  NSColor *outerLight = GeorgeGray(pressed ? 0x44 : 0xDD);
-  NSColor *outerShade = GeorgeGray(pressed ? 0x88 : 0x77);
-  NSColor *innerLight = GeorgeGray(pressed ? 0x55 : 0xFF);
-  NSColor *innerShade = GeorgeGray(pressed ? 0x77 : 0xAA);
+  NSColor *face = GeorgeGray(pressed ? 0xD7 : 0xF1);
+  NSColor *edge = GeorgeGray(enabled ? 0x5E : 0x88);
+  NSColor *shadow = GeorgeGray(pressed ? 0x9A : 0xBB);
+  NSColor *highlight = GeorgeGray(pressed ? 0xF1 : 0xFF);
 
   if (w < 6 || h < 6)
     return;
 
 #define BEVEL(x_, y_, w_, h_, c) GeorgeFill(r, flipped, 1, x_, y_, w_, h_, c)
   BEVEL(0, 0, w, 1, edge);
-  BEVEL(0, h - 1, w, 1, edge);
-  BEVEL(0, 1, 1, h - 2, edge);
-  BEVEL(w - 1, 1, 1, h - 2, edge);
+  BEVEL(0, h - 1, w, 1, shadow);
+  BEVEL(0, 0, 1, h, edge);
+  BEVEL(w - 1, 0, 1, h, shadow);
   BEVEL(1, 1, w - 2, h - 2, face);
-
-  if (!enabled)
-    return;
-
-  BEVEL(1, 1, w - 3, 1, outerLight);
-  BEVEL(1, 1, 1, h - 3, outerLight);
-  BEVEL(2, h - 2, w - 3, 1, outerShade);
-  BEVEL(w - 2, 2, 1, h - 3, outerShade);
-  BEVEL(2, 2, w - 5, 1, innerLight);
-  BEVEL(2, 2, 1, h - 5, innerLight);
-  BEVEL(3, h - 3, w - 5, 1, innerShade);
-  BEVEL(w - 3, 3, 1, h - 5, innerShade);
+  BEVEL(1, 1, w - 2, 1, highlight);
+  BEVEL(1, 1, 1, h - 2, highlight);
+  BEVEL(2, h - 2, w - 3, 1, shadow);
+  BEVEL(w - 2, 2, 1, h - 3, shadow);
 #undef BEVEL
 }
 
@@ -441,13 +391,13 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 
   if (w < 4 || h < 4)
     return;
-  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(0x00));
-  GeorgeFill(r, flipped, 1, 1, 1, w - 2, h - 2, fill ? fill : GeorgeGray(0xFF));
-  // Sunken: shaded along the top and left, lit along the bottom and right.
-  GeorgeFill(r, flipped, 1, 1, 1, w - 3, 1, GeorgeGray(0x88));
-  GeorgeFill(r, flipped, 1, 1, 1, 1, h - 3, GeorgeGray(0x88));
-  GeorgeFill(r, flipped, 1, 2, h - 2, w - 3, 1, GeorgeGray(0xFF));
-  GeorgeFill(r, flipped, 1, w - 2, 2, 1, h - 3, GeorgeGray(0xFF));
+
+  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(0xE8));
+  GeorgeFill(r, flipped, 1, 1, 1, w - 2, h - 2, fill ? fill : GeorgeGray(0xF5));
+  GeorgeFill(r, flipped, 1, 1, 1, w - 2, 1, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 1, 1, 1, h - 2, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 1, h - 2, w - 2, 1, GeorgeGray(0xA5));
+  GeorgeFill(r, flipped, 1, w - 2, 1, 1, h - 2, GeorgeGray(0xA5));
 }
 
 - (void)drawRaisedPanelInRect:(NSRect)frame flipped:(BOOL)flipped pressed:(BOOL)pressed
@@ -457,11 +407,12 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 
   if (w < 3 || h < 3)
     return;
-  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(pressed ? 0xAA : 0xDD));
-  GeorgeFill(r, flipped, 1, 0, 0, w - 1, 1, GeorgeGray(pressed ? 0x88 : 0xFF));
-  GeorgeFill(r, flipped, 1, 0, 0, 1, h - 1, GeorgeGray(pressed ? 0x88 : 0xFF));
-  GeorgeFill(r, flipped, 1, 1, h - 1, w - 1, 1, GeorgeGray(pressed ? 0xFF : 0x88));
-  GeorgeFill(r, flipped, 1, w - 1, 1, 1, h - 1, GeorgeGray(pressed ? 0xFF : 0x88));
+
+  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(pressed ? 0xD7 : 0xEF));
+  GeorgeFill(r, flipped, 1, 0, 0, w, 1, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 0, 0, 1, h, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 0, h - 1, w, 1, GeorgeGray(0x9A));
+  GeorgeFill(r, flipped, 1, w - 1, 0, 1, h, GeorgeGray(0x9A));
 }
 
 - (void)drawGrooveInRect:(NSRect)frame flipped:(BOOL)flipped
@@ -471,15 +422,11 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 
   if (w < 3 || h < 3)
     return;
-  // A groove is a dark line with a light line below and to its right.
-  GeorgeFill(r, flipped, 1, 0, 0, w - 1, 1, GeorgeGray(0x88));
-  GeorgeFill(r, flipped, 1, 0, 0, 1, h - 1, GeorgeGray(0x88));
-  GeorgeFill(r, flipped, 1, 1, 1, w - 2, 1, GeorgeGray(0xFF));
-  GeorgeFill(r, flipped, 1, 1, 1, 1, h - 2, GeorgeGray(0xFF));
-  GeorgeFill(r, flipped, 1, 1, h - 1, w - 1, 1, GeorgeGray(0xFF));
-  GeorgeFill(r, flipped, 1, w - 1, 1, 1, h - 1, GeorgeGray(0xFF));
-  GeorgeFill(r, flipped, 1, 1, h - 2, w - 2, 1, GeorgeGray(0x88));
-  GeorgeFill(r, flipped, 1, w - 2, 1, 1, h - 2, GeorgeGray(0x88));
+
+  GeorgeFill(r, flipped, 1, 0, 0, w, 1, GeorgeGray(0x88));
+  GeorgeFill(r, flipped, 1, 0, h - 1, w, 1, GeorgeGray(0x9A));
+  GeorgeFill(r, flipped, 1, 0, 0, 1, h, GeorgeGray(0x88));
+  GeorgeFill(r, flipped, 1, w - 1, 0, 1, h, GeorgeGray(0x9A));
 }
 
 - (void)drawSliderKnobInRect:(NSRect)frame flipped:(BOOL)flipped pressed:(BOOL)pressed
@@ -489,22 +436,22 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 
   if (w < 6 || h < 6)
     return;
-  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(0x00));
-  GeorgeFill(r, flipped, 1, 1, 1, w - 2, h - 2, GeorgeGray(pressed ? 0x99 : 0xDD));
-  GeorgeFill(r, flipped, 1, 1, 1, w - 3, 1, GeorgeGray(pressed ? 0x77 : 0xFF));
-  GeorgeFill(r, flipped, 1, 1, 1, 1, h - 3, GeorgeGray(pressed ? 0x77 : 0xFF));
-  GeorgeFill(r, flipped, 1, 2, h - 2, w - 3, 1, GeorgeGray(pressed ? 0xDD : 0x88));
-  GeorgeFill(r, flipped, 1, w - 2, 2, 1, h - 3, GeorgeGray(pressed ? 0xDD : 0x88));
-  // One grip line across the middle, like the scroll bar thumb has.
+
+  GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeGray(pressed ? 0xD7 : 0xF1));
+  GeorgeFill(r, flipped, 1, 0, 0, w, 1, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 0, 0, 1, h, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 0, h - 1, w, 1, GeorgeGray(0x9A));
+  GeorgeFill(r, flipped, 1, w - 1, 0, 1, h, GeorgeGray(0x9A));
+
   if (w > h)
     {
-      GeorgeFill(r, flipped, 1, floor(w / 2.0), 3, 1, h - 6, GeorgeGray(0x88));
-      GeorgeFill(r, flipped, 1, floor(w / 2.0) - 1, 3, 1, h - 6, GeorgeGray(0xFF));
+      GeorgeFill(r, flipped, 1, floor(w / 2.0), 3, 1, h - 6, GeorgeSchemeColor(3));
+      GeorgeFill(r, flipped, 1, floor(w / 2.0) - 1, 3, 1, h - 6, GeorgeSchemeColor(6));
     }
   else
     {
-      GeorgeFill(r, flipped, 1, 3, floor(h / 2.0), w - 6, 1, GeorgeGray(0x88));
-      GeorgeFill(r, flipped, 1, 3, floor(h / 2.0) - 1, w - 6, 1, GeorgeGray(0xFF));
+      GeorgeFill(r, flipped, 1, 3, floor(h / 2.0), w - 6, 1, GeorgeSchemeColor(3));
+      GeorgeFill(r, flipped, 1, 3, floor(h / 2.0) - 1, w - 6, 1, GeorgeSchemeColor(6));
     }
 }
 
@@ -516,20 +463,17 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 
   if (size < 9)
     return;
-  // Two overlapping squares, the Platinum size box.
-  GeorgeFill(r, flipped, 1, 0, 0, size, size, GeorgeGray(0xDD));
-  GeorgeFill(r, flipped, 1, 0, 0, size - 4, size - 4, GeorgeGray(0xFF));
-  GeorgeFill(r, flipped, 1, 1, 1, size - 6, size - 6, GeorgeGray(0xDD));
-  GeorgeFill(r, flipped, 1, 4, 4, size - 4, size - 4, GeorgeGray(0xFF));
-  GeorgeFill(r, flipped, 1, 5, 5, size - 6, size - 6, GeorgeGray(0xDD));
-  GeorgeFill(r, flipped, 1, 0, 0, size - 4, 1, GeorgeGray(0x00));
-  GeorgeFill(r, flipped, 1, 0, 0, 1, size - 4, GeorgeGray(0x00));
-  GeorgeFill(r, flipped, 1, 4, 4, size - 4, 1, GeorgeGray(0x00));
-  GeorgeFill(r, flipped, 1, 4, 4, 1, size - 4, GeorgeGray(0x00));
-  GeorgeFill(r, flipped, 1, 4, size - 5, size - 4, 1, GeorgeGray(0x00));
-  GeorgeFill(r, flipped, 1, size - 5, 4, 1, size - 4, GeorgeGray(0x00));
-  GeorgeFill(r, flipped, 1, 0, size - 5, 5, 1, GeorgeGray(0x00));
-  GeorgeFill(r, flipped, 1, size - 5, 0, 1, 5, GeorgeGray(0x00));
+
+  GeorgeFill(r, flipped, 1, 0, 0, size, size, GeorgeGray(0xF1));
+  GeorgeFill(r, flipped, 1, 0, 0, size, 1, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 0, 0, 1, size, GeorgeGray(0xFF));
+  GeorgeFill(r, flipped, 1, 0, size - 1, size, 1, GeorgeGray(0x9A));
+  GeorgeFill(r, flipped, 1, size - 1, 0, 1, size, GeorgeGray(0x9A));
+
+  GeorgeFill(r, flipped, 1, 3, 3, size - 7, 1, GeorgeGray(0x5E));
+  GeorgeFill(r, flipped, 1, 3, 3, 1, size - 7, GeorgeGray(0x5E));
+  GeorgeFill(r, flipped, 1, 5, 5, size - 11, 1, GeorgeGray(0x88));
+  GeorgeFill(r, flipped, 1, 5, 5, 1, size - 11, GeorgeGray(0x88));
 }
 
 - (void)drawBarberPoleInRect:(NSRect)frame flipped:(BOOL)flipped phase:(NSInteger)phase
@@ -539,10 +483,6 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
   NSInteger x, y;
 
   GeorgeFill(r, flipped, 1, 0, 0, w, h, GeorgeSchemeColor(4));
-  // Diagonal stripes that travel one pixel per phase step. Each row is a run
-  // of four lit pixels every eight, so the row is filled a stripe at a time
-  // rather than a pixel at a time: an indeterminate bar redraws many times a
-  // second and one fill per pixel is far too much work for that.
   for (y = 0; y < (NSInteger)h; y++)
     {
       NSInteger start = ((-y - phase) % 8 + 8) % 8;
