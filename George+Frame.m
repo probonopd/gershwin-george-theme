@@ -24,7 +24,7 @@
                                        edge:(NSInteger)edge
                                      active:(BOOL)active
 {
-  static const NSInteger lit[] = { 0x00, 0x4D, 0x72, 0x96, 0xB8, 0x00 };
+  static const NSInteger lit[] = { 0x00, 0x4D, 0x71, 0x95, 0xB8, 0x00 };
   CGFloat s = GeorgeUnit();
   NSInteger line = (NSInteger)floor(depth / s);
   NSInteger count = sizeof(lit) / sizeof(lit[0]);

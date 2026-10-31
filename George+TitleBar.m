@@ -19,8 +19,6 @@ static void OpenLookFill(NSRect ref, CGFloat x, CGFloat y, CGFloat w, CGFloat h,
   GeorgeFill(ref, NO, GeorgeUnit(), x, y, w, h, GeorgeGray(gray));
 }
 
-#define EDGE (METRICS_WINDOW_PLATINUM_BORDER - 1)
-
 static NSString *GeorgeFittingTitle(NSString *title, NSDictionary *attributes,
                                    CGFloat width)
 {
@@ -79,20 +77,20 @@ static NSString *GeorgeFittingTitle(NSString *title, NSDictionary *attributes,
 
   if (active)
     {
-      OpenLookFill(rect, 0, 0, w, h, 0xD9);
-      OpenLookFill(rect, 0, 0, w, 1, 0x6F);
-      OpenLookFill(rect, 0, 0, 1, h, 0x6F);
-      OpenLookFill(rect, w - 1, 0, 1, h, 0x88);
-      OpenLookFill(rect, 0, h - 1, w, 1, 0x88);
-      OpenLookFill(rect, 0, h - 2, w, 1, 0x3D);
+      OpenLookFill(rect, 0, 0, w, h, 0xE9);
+      OpenLookFill(rect, 0, 0, w, 1, 0x73);
+      OpenLookFill(rect, 0, 0, 1, h, 0x73);
+      OpenLookFill(rect, w - 1, 0, 1, h, 0x8A);
+      OpenLookFill(rect, 0, h - 1, w, 1, 0x8A);
+      OpenLookFill(rect, 0, h - 2, w, 1, 0x4D);
     }
   else
     {
-      OpenLookFill(rect, 0, 0, w, h, 0xE2);
-      OpenLookFill(rect, 0, 0, w, 1, 0x8D);
-      OpenLookFill(rect, 0, 0, 1, h, 0x8D);
-      OpenLookFill(rect, w - 1, 0, 1, h, 0x8D);
-      OpenLookFill(rect, 0, h - 1, w, 1, 0xAA);
+      OpenLookFill(rect, 0, 0, w, h, 0xE0);
+      OpenLookFill(rect, 0, 0, w, 1, 0x8F);
+      OpenLookFill(rect, 0, 0, 1, h, 0x8F);
+      OpenLookFill(rect, w - 1, 0, 1, h, 0x8F);
+      OpenLookFill(rect, 0, h - 1, w, 1, 0xA3);
     }
 }
 
@@ -157,13 +155,6 @@ static NSString *GeorgeFittingTitle(NSString *title, NSDictionary *attributes,
         }
 
       left = MAX(leftEdge, MIN(round(w / 2.0 - textWidth / 2.0), rightEdge - textWidth));
-      if (active)
-        {
-          NSMutableDictionary *emboss = AUTORELEASE([attributes mutableCopy]);
-          [emboss setObject: GeorgeGray(0xFF) forKey: NSForegroundColorAttributeName];
-          [title drawAtPoint: NSMakePoint(NSMinX(rect) + (left + 1) * s, textY - s)
-              withAttributes: emboss];
-        }
       [title drawAtPoint: NSMakePoint(NSMinX(rect) + left * s, textY)
           withAttributes: attributes];
     }
@@ -176,17 +167,16 @@ static NSString *GeorgeFittingTitle(NSString *title, NSDictionary *attributes,
   NSInteger i, j;
   NSColor *outline = GeorgeGray(0x5E);
 
-  OpenLookFill(slot, 0, 0, NSWidth(slot), NSHeight(slot), 0xDF);
-
-  for (j = 0; j < 10; j++)
+  OpenLookFill(slot, 0, 0, NSWidth(slot), NSHeight(slot), 0xF1);
+  for (j = 0; j < 9; j++)
     {
-      for (i = 0; i < 10; i++)
+      for (i = 0; i < 9; i++)
         {
           CGFloat x = i, y = j;
           if (x < 1 || y < 1 || x > NSWidth(slot) - 2 || y > NSHeight(slot) - 2)
             OpenLookFill(slot, x, y, 1, 1, 0x6F);
           else
-            OpenLookFill(slot, x, y, 1, 1, 0xF4);
+            OpenLookFill(slot, x, y, 1, 1, 0xF7);
         }
     }
 

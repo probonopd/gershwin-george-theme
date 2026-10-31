@@ -14,12 +14,12 @@
 
 - (NSColor *)menuBackgroundColor
 {
-  return GeorgeSchemeColor(6);
+  return GeorgeGray(0xE8);
 }
 
 - (NSColor *)disabledMenuTextColor
 {
-  return GeorgeGray(0x6E);
+  return GeorgeGray(0x7A);
 }
 
 - (void)drawMenuBackgroundInView:(NSView *)view isHorizontal:(BOOL)horizontal
@@ -33,10 +33,10 @@
   if (!horizontal)
     return;
 
-  GeorgeFill(b, f, 1, 0, 0, w, 1, GeorgeSchemeColor(3));
-  GeorgeFill(b, f, 1, 0, 0, 1, h, GeorgeSchemeColor(3));
-  GeorgeFill(b, f, 1, w - 1, 0, 1, h, GeorgeGray(0x7A));
-  GeorgeFill(b, f, 1, 0, h - 1, w, 1, GeorgeGray(0x7A));
+  GeorgeFill(b, f, 1, 0, 0, w, 1, GeorgeGray(0xFF));
+  GeorgeFill(b, f, 1, 0, 0, 1, h, GeorgeGray(0xFF));
+  GeorgeFill(b, f, 1, w - 1, 0, 1, h, GeorgeGray(0x9A));
+  GeorgeFill(b, f, 1, 0, h - 1, w, 1, GeorgeGray(0x9A));
 }
 
 - (void)drawMenuFrameInView:(NSView *)view
@@ -50,10 +50,10 @@
   GeorgeFill(b, f, 1, 1, 1, 1, h - 2, GeorgeGray(0xFF));
   GeorgeFill(b, f, 1, 2, h - 2, w - 3, 1, GeorgeGray(0x88));
   GeorgeFill(b, f, 1, w - 2, 2, 1, h - 3, GeorgeGray(0x88));
-  GeorgeFill(b, f, 1, 0, 0, w, 1, GeorgeGray(0x00));
-  GeorgeFill(b, f, 1, 0, h - 1, w, 1, GeorgeGray(0x00));
-  GeorgeFill(b, f, 1, 0, 0, 1, h, GeorgeGray(0x00));
-  GeorgeFill(b, f, 1, w - 1, 0, 1, h, GeorgeGray(0x00));
+  GeorgeFill(b, f, 1, 0, 0, w, 1, GeorgeGray(0x60));
+  GeorgeFill(b, f, 1, 0, h - 1, w, 1, GeorgeGray(0x60));
+  GeorgeFill(b, f, 1, 0, 0, 1, h, GeorgeGray(0x60));
+  GeorgeFill(b, f, 1, w - 1, 0, 1, h, GeorgeGray(0x60));
 }
 
 - (void)drawMenuItemBackgroundInFrame:(NSRect)cellFrame
@@ -62,7 +62,7 @@
 {
   if (highlighted)
     {
-      [GeorgeSchemeColor(3) set];
+      [GeorgeGray(0xB8) set];
       NSRectFill(cellFrame);
     }
   else if (!horizontal)
@@ -75,7 +75,7 @@
 - (void)drawMenuSeparatorInFrame:(NSRect)cellFrame flipped:(BOOL)flipped
 {
   GeorgeFill(cellFrame, flipped, 1, 0, floor(NSHeight(cellFrame) / 2.0),
-             NSWidth(cellFrame), 1, GeorgeGray(0x6E));
+             NSWidth(cellFrame), 1, GeorgeGray(0xA0));
 }
 
 #pragma mark - GSTheme menu hooks
@@ -92,12 +92,12 @@
 
 - (NSColor *)menuBarBorderColor
 {
-  return GeorgeGray(0x00);
+  return GeorgeGray(0x60);
 }
 
 - (NSColor *)menuBorderColor
 {
-  return GeorgeGray(0x00);
+  return GeorgeGray(0x60);
 }
 
 - (NSColor *)menuSeparatorColor
