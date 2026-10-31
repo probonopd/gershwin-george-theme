@@ -1,6 +1,6 @@
-# George Theme
+# OpenLook Theme
 
-George is a GNUstep theme in the Mac OS 8 Platinum style, reinterpreted with a
+OpenLook is a GNUstep theme in the Mac OS 8 Platinum style, reinterpreted with a
 cooler OpenLook-inspired palette: steel grays, low-saturation blues, and a
 light ivory surface that keeps the classic beveled window chrome while fitting
 more naturally in a modern GNUstep desktop.
@@ -18,12 +18,12 @@ only; none of its artwork is shipped here.
    ```bash
    sudo -E gmake install
    ```
-   The theme lands in `$(GNUSTEP_LIBRARY)/Themes/George.theme`, and its three
+   The theme lands in `$(GNUSTEP_LIBRARY)/Themes/OpenLook.theme`, and its three
    UI faces in `/System/Library/Fonts/ChicagoKare`, `.../Geneva92` and
    `.../Monaco9` so that fontconfig finds them.
 3. Select it:
    ```bash
-   defaults write NSGlobalDomain GSTheme George
+   defaults write NSGlobalDomain GSTheme OpenLook
    ```
    Log out and back in so the WindowManager picks it up as well.
 
