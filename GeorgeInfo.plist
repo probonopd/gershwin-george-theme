@@ -5,9 +5,9 @@
  */
 
 {
-    GSThemeName = "George";
-    GSThemeDescription = "Platinum for Gershwin";
-    GSThemeDetails = "The Mac OS 8 Platinum look, as Greg Landweber's Aaron extension drew it. Every part is drawn in code; no Aaron artwork is shipped.";
+    GSThemeName = "OpenLook";
+    GSThemeDescription = "OpenLook for Gershwin";
+    GSThemeDetails = "A cool OpenLook-inspired reinterpretation of the Mac OS 8 Platinum look, with steel grays, muted blue accents, and beveled window chrome.";
     GSThemeAuthors = (
         "Simon Peter"
     );
