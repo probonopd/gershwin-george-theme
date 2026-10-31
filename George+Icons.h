@@ -7,7 +7,8 @@
 #import "George.h"
 
 /* The file icons: folders, documents, volumes and the trash, drawn as
- * Platinum pixel art in the same grays the controls use. */
+ * Platinum pixel art with a cooler OpenLook palette so they visually match the
+ * rest of the theme without losing the original icon geometry. */
 @interface George (Icons)
 
 /* Draws each icon on demand and registers it under the name GNUstep looks it
