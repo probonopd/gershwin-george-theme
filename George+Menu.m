@@ -14,12 +14,11 @@
 
 - (NSColor *)menuBackgroundColor
 {
-  return GeorgeGray(0xDD);
+  return GeorgeSchemeColor(6);
 }
 
 - (NSColor *)disabledMenuTextColor
 {
-  // What Aaron's grayishTextOr yields between black text and the #DDDDDD menu.
   return GeorgeGray(0x6E);
 }
 
@@ -33,13 +32,11 @@
   GeorgeFill(b, f, 1, 0, 0, w, h, [self menuBackgroundColor]);
   if (!horizontal)
     return;
-  // Light top and left edges, a gray line above the black bottom edge and
-  // down the right side.
-  GeorgeFill(b, f, 1, 0, 0, w - 1, 1, GeorgeGray(0xFF));
-  GeorgeFill(b, f, 1, 0, 0, 1, h - 2, GeorgeGray(0xFF));
-  GeorgeFill(b, f, 1, 1, h - 2, w - 1, 1, GeorgeGray(0x99));
-  GeorgeFill(b, f, 1, w - 1, 1, 1, h - 2, GeorgeGray(0x99));
-  GeorgeFill(b, f, 1, 0, h - 1, w, 1, GeorgeGray(0x00));
+
+  GeorgeFill(b, f, 1, 0, 0, w, 1, GeorgeSchemeColor(3));
+  GeorgeFill(b, f, 1, 0, 0, 1, h, GeorgeSchemeColor(3));
+  GeorgeFill(b, f, 1, w - 1, 0, 1, h, GeorgeGray(0x7A));
+  GeorgeFill(b, f, 1, 0, h - 1, w, 1, GeorgeGray(0x7A));
 }
 
 - (void)drawMenuFrameInView:(NSView *)view
@@ -49,11 +46,10 @@
   CGFloat w = NSWidth(b);
   CGFloat h = NSHeight(b);
 
-  // Drawn over the items so a highlight stays inside the bevel.
-  GeorgeFill(b, f, 1, 1, 1, w - 3, 1, GeorgeGray(0xFF));
-  GeorgeFill(b, f, 1, 1, 1, 1, h - 3, GeorgeGray(0xFF));
-  GeorgeFill(b, f, 1, 2, h - 2, w - 3, 1, GeorgeGray(0x99));
-  GeorgeFill(b, f, 1, w - 2, 2, 1, h - 3, GeorgeGray(0x99));
+  GeorgeFill(b, f, 1, 1, 1, w - 2, 1, GeorgeGray(0xFF));
+  GeorgeFill(b, f, 1, 1, 1, 1, h - 2, GeorgeGray(0xFF));
+  GeorgeFill(b, f, 1, 2, h - 2, w - 3, 1, GeorgeGray(0x88));
+  GeorgeFill(b, f, 1, w - 2, 2, 1, h - 3, GeorgeGray(0x88));
   GeorgeFill(b, f, 1, 0, 0, w, 1, GeorgeGray(0x00));
   GeorgeFill(b, f, 1, 0, h - 1, w, 1, GeorgeGray(0x00));
   GeorgeFill(b, f, 1, 0, 0, 1, h, GeorgeGray(0x00));
@@ -61,8 +57,8 @@
 }
 
 - (void)drawMenuItemBackgroundInFrame:(NSRect)cellFrame
-                               highlighted:(BOOL)highlighted
-                              isHorizontal:(BOOL)horizontal
+                                highlighted:(BOOL)highlighted
+                               isHorizontal:(BOOL)horizontal
 {
   if (highlighted)
     {
@@ -79,7 +75,7 @@
 - (void)drawMenuSeparatorInFrame:(NSRect)cellFrame flipped:(BOOL)flipped
 {
   GeorgeFill(cellFrame, flipped, 1, 0, floor(NSHeight(cellFrame) / 2.0),
-                    NSWidth(cellFrame), 1, GeorgeGray(0x6E));
+             NSWidth(cellFrame), 1, GeorgeGray(0x6E));
 }
 
 #pragma mark - GSTheme menu hooks
@@ -115,49 +111,47 @@
 }
 
 - (void)drawBackgroundForMenuView:(NSMenuView *)menuView
-                        withFrame:(NSRect)bounds
-                        dirtyRect:(NSRect)dirtyRect
-                       horizontal:(BOOL)horizontal
+                         withFrame:(NSRect)bounds
+                         dirtyRect:(NSRect)dirtyRect
+                        horizontal:(BOOL)horizontal
 {
   [self drawMenuBackgroundInView: menuView isHorizontal: horizontal];
 }
 
 - (void)drawMenuRect:(NSRect)rect
-              inView:(NSView *)view
-        isHorizontal:(BOOL)horizontal
-           itemCells:(NSArray *)itemCells
+               inView:(NSView *)view
+         isHorizontal:(BOOL)horizontal
+            itemCells:(NSArray *)itemCells
 {
   [super drawMenuRect: rect inView: view isHorizontal: horizontal
-            itemCells: itemCells];
-  // Platinum draws the bevel of a menu over its items, so a highlight that
-  // runs the full width of the menu stays inside the frame.
+             itemCells: itemCells];
   if (!horizontal)
     [self drawMenuFrameInView: view];
 }
 
 - (BOOL)drawsBorderForMenuItemCell:(NSMenuItemCell *)cell
-                             state:(GSThemeControlState)state
-                      isHorizontal:(BOOL)horizontal
+                              state:(GSThemeControlState)state
+                       isHorizontal:(BOOL)horizontal
 {
   return NO;
 }
 
 - (void)drawBorderAndBackgroundForMenuItemCell:(NSMenuItemCell *)cell
-                                     withFrame:(NSRect)cellFrame
-                                        inView:(NSView *)controlView
-                                         state:(GSThemeControlState)state
-                                  isHorizontal:(BOOL)isHorizontal
+                                      withFrame:(NSRect)cellFrame
+                                         inView:(NSView *)controlView
+                                          state:(GSThemeControlState)state
+                                   isHorizontal:(BOOL)isHorizontal
 {
   [self drawMenuItemBackgroundInFrame: cellFrame
-                          highlighted: (state == GSThemeSelectedState
-                                        || state == GSThemeHighlightedState)
-                         isHorizontal: isHorizontal];
+                           highlighted: (state == GSThemeSelectedState
+                                         || state == GSThemeHighlightedState)
+                          isHorizontal: isHorizontal];
 }
 
 - (void)drawSeparatorItemForMenuItemCell:(NSMenuItemCell *)cell
-                               withFrame:(NSRect)cellFrame
-                                  inView:(NSView *)controlView
-                            isHorizontal:(BOOL)isHorizontal
+                                withFrame:(NSRect)cellFrame
+                                   inView:(NSView *)controlView
+                             isHorizontal:(BOOL)isHorizontal
 {
   [self drawMenuSeparatorInFrame: cellFrame flipped: [controlView isFlipped]];
 }
