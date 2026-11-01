@@ -46,8 +46,9 @@ WindowManager picks it up too).
 - `George.m` is wiring only. It implements the `GSTheme` hooks and routes each
   to a Platinum part in a category. Put drawing there, not here.
 - `George+Parts.m` - controls: push/bevel buttons, checkbox and radio images,
-  scroll arrows/knob/slot, wells, raised panels, grooves, slider knob, grow
-  box, barber pole.
+  scroll arrows/knob/slot, pop-up arrow box, stepper, disclosure triangles, menu
+  check marks, wells, raised panels, grooves, slider thumb, grow box, barber
+  pole.
 - `George+TitleBar.m` / `George+Frame.m` / `George+Menu.m` / `George+TabView.m`
   - the corresponding surfaces. `George+Frame.m` has no header; it implements
   the `George (Frame)` category declared in `George.h`.
@@ -64,6 +65,14 @@ WindowManager picks it up too).
   `-registerFileIcons` is called from `-activate`.
 - `GeorgeScrollerCells.m` - `NSScroller` draws through cells, so these three
   `NSButtonCell` subclasses hand drawing back to George.
+- `GeorgeControlImage.m` - two `NSImage` subclasses. NSButtonCell picks a
+  checkbox or radio image by name and tells it nothing, so `GeorgeToggleImage`
+  asks the button in focus for held, disabled and mixed; anywhere else it is an
+  ordinary image. `GeorgePopUpArrowImage` stands back in a bordered pop-up, whose
+  arrows are drawn with its arrow box.
+- `GeorgeGeometry.m` - what the parts decide before drawing, free of AppKit and
+  tested by `t_GeorgeGeometry`. Every rect comes from one GNUstep laid out: a
+  part may draw differently inside a frame, never change the frame.
 - `NSFont+George.m` - swizzles the `NSFont` UI-font class methods at `+load`
   time; a theme has no hook for the system font. Roles follow the Mac OS 8
   guidelines: system/menu/title/control content to Chicago Kare, label/tool

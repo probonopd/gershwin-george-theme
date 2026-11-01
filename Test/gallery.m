@@ -122,6 +122,55 @@ static NSTextField *label(NSString *text, NSRect frame)
 
 @end
 
+/* A small tree, one branch of it opened, for the disclosure triangles. */
+@interface GalleryTree : NSObject
+@end
+
+@implementation GalleryTree
+
+/* An outline tracks its items by pointer, so each must be the same object
+ * every time it is asked for. */
++ (NSString *)nameAtIndex:(NSInteger)index inFolder:(BOOL)inFolder
+{
+  static NSMutableDictionary *names = nil;
+  NSString *name = [NSString stringWithFormat: @"%@ %ld",
+                             inFolder ? @"Leaf" : @"Folder", (long)index + 1];
+
+  if (names == nil)
+    {
+      names = [NSMutableDictionary new];
+    }
+  if ([names objectForKey: name] == nil)
+    {
+      [names setObject: name forKey: name];
+    }
+  return [names objectForKey: name];
+}
+
+- (NSInteger)outlineView:(NSOutlineView *)view numberOfChildrenOfItem:(id)item
+{
+  return item == nil ? 3 : ([item isEqual: @"Folder 1"] ? 2 : 0);
+}
+
+- (id)outlineView:(NSOutlineView *)view child:(NSInteger)index ofItem:(id)item
+{
+  return [GalleryTree nameAtIndex: index inFolder: item != nil];
+}
+
+- (BOOL)outlineView:(NSOutlineView *)view isItemExpandable:(id)item
+{
+  return [item hasPrefix: @"Folder"];
+}
+
+- (id)outlineView:(NSOutlineView *)view
+  objectValueForTableColumn:(NSTableColumn *)column
+                     byItem:(id)item
+{
+  return item;
+}
+
+@end
+
 /* The file icons the theme registers, laid out so the whole set can be seen
  * at once. */
 @interface GalleryIcons : NSView
@@ -186,10 +235,194 @@ static NSTextField *label(NSString *text, NSRect frame)
   [file addItemWithTitle: @"Open" action: @selector(openDocument:) keyEquivalent: @"o"];
   [file addItem: [NSMenuItem separatorItem]];
   item = [file addItemWithTitle: @"Disabled" action: NULL keyEquivalent: @""];
+  item = [file addItemWithTitle: @"Checked" action: @selector(newDocument:) keyEquivalent: @""];
+  [item setState: NSOnState];
+  item = [file addItemWithTitle: @"Mixed" action: @selector(newDocument:) keyEquivalent: @""];
+  [item setState: NSMixedState];
   [file addItemWithTitle: @"Quit" action: @selector(terminate:) keyEquivalent: @"q"];
   [main addItemWithTitle: @"Edit" action: NULL keyEquivalent: @""];
   [main addItemWithTitle: @"View" action: NULL keyEquivalent: @""];
   [NSApp setMainMenu: main];
+}
+
+/* Every state the main window has no room for: nothing here can be reached by
+ * pressing something on a display without a person at it, so held controls are
+ * put in that state by hand. */
+- (void)buildStatesWindow
+{
+  NSWindow *states = [[NSWindow alloc]
+    initWithContentRect: NSMakeRect(0, 0, 620, 500)
+              styleMask: NSTitledWindowMask | NSClosableWindowMask
+                backing: NSBackingStoreBuffered
+                  defer: NO];
+  NSView *content = [states contentView];
+  static const NSInteger stateOfKind[] = { 0, 1, -1, 0, 1, -1 };
+  NSInteger i;
+
+  [states setTitle: @"George States"];
+
+  for (i = 0; i < 12; i++)
+    {
+      NSButton *b = [[NSButton alloc] initWithFrame:
+        NSMakeRect(10 + (i % 6) * 100, 470 - (i / 6) * 24, 96, 20)];
+      NSInteger kind = i % 6;
+
+      [b setButtonType: (i < 6 ? NSSwitchButton : NSRadioButton)];
+      [b setTitle: [NSString stringWithFormat: @"%@", @[@"Off", @"On", @"Mixed",
+                    @"Off dim", @"On dim", @"Mix dim"][kind]]];
+      [b setAllowsMixedState: YES];
+      [b setState: stateOfKind[kind]];
+      [b setEnabled: kind < 3];
+      [content addSubview: b];
+    }
+  for (i = 0; i < 4; i++)
+    {
+      NSButton *b = [[NSButton alloc] initWithFrame:
+        NSMakeRect(10 + i * 100, 422, 96, 20)];
+
+      [b setButtonType: (i < 2 ? NSSwitchButton : NSRadioButton)];
+      [b setTitle: @"Held"];
+      [b setState: i % 2];
+      [[b cell] setHighlighted: YES];
+      [content addSubview: b];
+    }
+
+  for (i = 0; i < 3; i++)
+    {
+      NSSlider *s = [[NSSlider alloc] initWithFrame:
+        NSMakeRect(10 + i * 130, 390, 120, 20)];
+
+      [s setDoubleValue: 0.2 + i * 0.3];
+      [s setEnabled: i != 1];
+      if (i == 2)
+        {
+          [[s cell] setHighlighted: YES];
+        }
+      [content addSubview: s];
+    }
+  for (i = 0; i < 2; i++)
+    {
+      NSSlider *s = [[NSSlider alloc] initWithFrame:
+        NSMakeRect(420 + i * 30, 340, 20, 110)];
+
+      [s setDoubleValue: 0.6];
+      [s setEnabled: i == 0];
+      [content addSubview: s];
+    }
+
+  {
+    NSPopUpButton *p;
+    NSStepper *step;
+
+    p = [[NSPopUpButton alloc] initWithFrame: NSMakeRect(10, 360, 130, 22) pullsDown: YES];
+    [p addItemsWithTitles: @[@"Pull-down", @"Two"]];
+    [content addSubview: p];
+
+    p = [[NSPopUpButton alloc] initWithFrame: NSMakeRect(150, 360, 130, 22)];
+    [p addItemsWithTitles: @[@"Dimmed", @"Two"]];
+    [p setEnabled: NO];
+    [content addSubview: p];
+
+    p = [[NSPopUpButton alloc] initWithFrame: NSMakeRect(290, 360, 120, 22)];
+    [p addItemsWithTitles: @[@"Borderless", @"Two"]];
+    [p setBordered: NO];
+    [content addSubview: p];
+
+    p = [[NSPopUpButton alloc] initWithFrame: NSMakeRect(10, 330, 50, 22)];
+    [p addItemsWithTitles: @[@"A title that fits exactly", @"Two"]];
+    [p sizeToFit];
+    [content addSubview: p];
+
+    p = [[NSPopUpButton alloc] initWithFrame: NSMakeRect(290, 330, 120, 22)];
+    [p addItemsWithTitles: @[@"Checked", @"Mixed", @"Plain"]];
+    [[p itemAtIndex: 1] setState: NSMixedState];
+    [content addSubview: p];
+
+    step = [[NSStepper alloc] initWithFrame: NSMakeRect(490, 400, 15, 22)];
+    [step setEnabled: NO];
+    [content addSubview: step];
+    step = [[NSStepper alloc] initWithFrame: NSMakeRect(520, 400, 18, 26)];
+    [content addSubview: step];
+  }
+
+  {
+    NSOutlineView *tree = [[NSOutlineView alloc] initWithFrame: NSMakeRect(0, 0, 180, 120)];
+    NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier: @"tree"];
+    NSScrollView *scroll = [[NSScrollView alloc] initWithFrame: NSMakeRect(10, 190, 200, 130)];
+    GalleryTree *data = [GalleryTree new];
+
+    [column setWidth: 170];
+    [tree addTableColumn: column];
+    [tree setOutlineTableColumn: column];
+    [tree setDataSource: data];
+    [scroll setHasVerticalScroller: YES];
+    [scroll setBorderType: NSBezelBorder];
+    [scroll setDocumentView: tree];
+    [content addSubview: scroll];
+    [tree expandItem: [GalleryTree nameAtIndex: 0 inFolder: NO]];
+  }
+
+  {
+    NSTableView *table = [[NSTableView alloc] initWithFrame: NSMakeRect(0, 0, 360, 100)];
+    NSScrollView *scroll = [[NSScrollView alloc] initWithFrame: NSMakeRect(230, 190, 380, 130)];
+    NSArray *names = @[@"one", @"two", @"three"];
+    NSTableColumn *column;
+
+    for (i = 0; i < 3; i++)
+      {
+        column = [[NSTableColumn alloc] initWithIdentifier: names[i]];
+        [column setWidth: 110];
+        [[column headerCell] setStringValue: [names[i] capitalizedString]];
+        [column setSortDescriptorPrototype:
+          [NSSortDescriptor sortDescriptorWithKey: names[i] ascending: YES]];
+        [table addTableColumn: column];
+      }
+    [table setSortDescriptors:
+      @[[NSSortDescriptor sortDescriptorWithKey: @"two" ascending: NO]]];
+    [table setHighlightedTableColumn: [table tableColumnWithIdentifier: @"three"]];
+    [table setDataSource: [GalleryRows new]];
+    [scroll setHasVerticalScroller: YES];
+    [scroll setBorderType: NSBezelBorder];
+    [scroll setDocumentView: table];
+    [content addSubview: scroll];
+  }
+
+  {
+    NSTabView *tabs = [[NSTabView alloc] initWithFrame: NSMakeRect(10, 90, 320, 90)];
+    NSBox *box = [[NSBox alloc] initWithFrame: NSMakeRect(340, 90, 270, 90)];
+    NSBox *wide = [[NSBox alloc] initWithFrame: NSMakeRect(340, 10, 130, 70)];
+    NSTabView *bottom = [[NSTabView alloc] initWithFrame: NSMakeRect(10, 5, 320, 80)];
+    NSButton *focused = [[NSButton alloc] initWithFrame: NSMakeRect(490, 40, 110, 24)];
+
+    for (i = 0; i < 3; i++)
+      {
+        NSTabViewItem *item = [[NSTabViewItem alloc] initWithIdentifier: @(i)];
+        NSTabViewItem *under = [[NSTabViewItem alloc] initWithIdentifier: @(i)];
+
+        [item setLabel: @[@"First", @"Second", @"Third"][i]];
+        [under setLabel: @[@"Under", @"Below", @"Beneath"][i]];
+        [tabs addTabViewItem: item];
+        [bottom addTabViewItem: under];
+      }
+    [tabs selectTabViewItemAtIndex: 1];
+    [bottom setTabViewType: NSBottomTabsBezelBorder];
+    [content addSubview: tabs];
+    [content addSubview: bottom];
+    [box setTitle: @"Title on the line"];
+    [content addSubview: box];
+    [wide setTitle: @"A title as wide as this box"];
+    [content addSubview: wide];
+    [focused setTitle: @"Focused"];
+    [focused setBezelStyle: NSRoundedBezelStyle];
+    [content addSubview: focused];
+    [states setInitialFirstResponder: focused];
+    [states makeFirstResponder: focused];
+  }
+
+  [states setFrameTopLeftPoint:
+            NSMakePoint(NSMaxX([[NSScreen mainScreen] frame]) - NSWidth([states frame]) - 10,
+                        NSMaxY([[NSScreen mainScreen] frame]) - 40)];
+  [states orderFront: nil];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)note
@@ -369,6 +602,7 @@ static NSTextField *label(NSString *text, NSRect frame)
     [icons orderFront: nil];
   }
 
+  [self buildStatesWindow];
   [window center];
   [window makeKeyAndOrderFront: nil];
   [self buildMenu];

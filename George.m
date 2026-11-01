@@ -15,6 +15,8 @@
 #import "George+Parts.h"
 #import "George+TabView.h"
 #import "George+TitleBar.h"
+#import "GeorgeControlImage.h"
+#import "GeorgeGeometry.h"
 #import "GeorgePlatinum.h"
 #import "GeorgeScrollerCells.h"
 #import "AppearanceMetrics.h"
@@ -42,6 +44,9 @@ BOOL GeorgeThemeIsActive(void)
  * there before, keyed by the name they took. */
 static NSMutableDictionary *gGeorgeReplacedImages = nil;
 
+/* Names this theme brought in itself, which go away with it. */
+static NSMutableSet *gGeorgeAddedImages = nil;
+
 void GeorgeRegisterImage(NSImage *image, NSString *name)
 {
   NSImage *old = [NSImage imageNamed: name];
@@ -57,8 +62,19 @@ void GeorgeRegisterImage(NSImage *image, NSString *name)
   /* Retained before the name is taken away, which is what would release it,
    * and only the first time round: a second activation would otherwise record
    * the drawing of the first one as the image to go back to. */
-  if (old != nil && [gGeorgeReplacedImages objectForKey: registered] == nil)
-    [gGeorgeReplacedImages setObject: old forKey: registered];
+  if (old != nil && [gGeorgeReplacedImages objectForKey: registered] == nil
+      && ![gGeorgeAddedImages containsObject: registered])
+    {
+      [gGeorgeReplacedImages setObject: old forKey: registered];
+    }
+  if (old == nil)
+    {
+      if (gGeorgeAddedImages == nil)
+        {
+          gGeorgeAddedImages = [[NSMutableSet alloc] init];
+        }
+      [gGeorgeAddedImages addObject: registered];
+    }
   [old setName: nil];
   [image setName: registered];
 }
@@ -78,6 +94,15 @@ static void GeorgeRestoreReplacedImages(void)
       [old setName: name];
     }
   [gGeorgeReplacedImages removeAllObjects];
+
+  names = [gGeorgeAddedImages objectEnumerator];
+  while ((name = [names nextObject]) != nil)
+    {
+      NSImage *mine = [NSImage imageNamed: name];
+
+      [mine setName: nil];
+    }
+  [gGeorgeAddedImages removeAllObjects];
 }
 
 static BOOL GeorgeStateIsPressed(GSThemeControlState state)
@@ -190,6 +215,57 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
                            pressed: pressed enabled: enabled];
         break;
     }
+  if ([cell isKindOfClass: [NSPopUpButtonCell class]])
+    {
+      [self drawArrowBoxOfPopUp: (NSPopUpButtonCell *)cell frame: frame
+                        flipped: flipped pressed: pressed enabled: enabled];
+    }
+}
+
+/* The arrow images stand back in a bordered pop-up (see GeorgePopUpArrowImage),
+ * so this is what shows where the menu will open. libs-gui reserves room for
+ * the arrow image alone, which is what the box is measured from. */
+- (void)drawArrowBoxOfPopUp:(NSPopUpButtonCell *)cell
+                      frame:(NSRect)frame
+                    flipped:(BOOL)flipped
+                    pressed:(BOOL)pressed
+                    enabled:(BOOL)enabled
+{
+  BOOL pullsDown = [cell pullsDown];
+  NSImage *itemImage = [[cell menuItem] image];
+  NSImage *arrowImage = [NSImage imageNamed: (pullsDown ? @"common_3DArrowDown"
+                                              : @"common_Nibble")];
+  NSInteger arrow = -1;
+  NSRect box;
+
+  if (pullsDown)
+    {
+      if ([cell arrowPosition] == NSPopUpNoArrow)
+        {
+          return;
+        }
+      // The same mapping from edge to arrow that libs-gui picks its image by.
+      switch ([cell preferredEdge])
+        {
+          case NSMaxXEdge: arrow = 3; break;
+          case NSMinYEdge: arrow = 0; break;
+          case NSMinXEdge: arrow = 2; break;
+          default: arrow = 1; break;
+        }
+    }
+  // An item with a picture of its own shows that in the arrow's place.
+  if (itemImage != nil && ![itemImage isKindOfClass: [GeorgePopUpArrowImage class]])
+    {
+      return;
+    }
+  box = GeorgePopUpArrowBoxRect(frame, NSMaxX([cell drawingRectForBounds: frame])
+                                       - [arrowImage size].width - 4);
+  if (NSIsEmptyRect(box))
+    {
+      return;
+    }
+  [self drawPopUpArrowBoxInRect: box flipped: flipped pressed: pressed
+                        enabled: enabled arrow: arrow];
 }
 
 - (GSThemeMargins)buttonMarginsForCell:(NSCell *)cell
@@ -221,10 +297,19 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
 - (void)drawFocusFrame:(NSRect)frame view:(NSView *)view
 {
   NSRect r = NSIntegralRect(frame);
+  NSRect bands[GeorgeFocusRingBandCount];
+  NSUInteger i;
 
+  if (NSWidth(r) < 4 || NSHeight(r) < 4)
+    {
+      return;
+    }
+  GeorgeFocusRingBands(r, bands);
   [GeorgeSchemeColor(3) set];
-  NSFrameRect(r);
-  NSFrameRect(NSInsetRect(r, 1, 1));
+  for (i = 0; i < GeorgeFocusRingBandCount; i++)
+    {
+      NSRectFill(bands[i]);
+    }
 }
 
 - (void)drawWindowBackground:(NSRect)frame view:(NSView *)view
@@ -361,13 +446,17 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
   return [box boxType] != NSBoxSeparator;
 }
 
-/* Group boxes are framed with Platinum's embossed groove. */
+/* Group boxes are framed with Platinum's embossed groove, its top line running
+ * through the title. NSBox has already kept the content clear of the title, and
+ * that does not depend on anything here. */
 - (void)drawBoxInClipRect:(NSRect)clipRect
                   boxType:(NSBoxType)boxType
                borderType:(NSBorderType)borderType
                    inView:(NSBox *)box
 {
   NSView *view = (NSView *)box;
+  NSRect bounds = [view bounds];
+  NSRect border = [box borderRect];
 
   if (borderType == NSNoBorder)
     {
@@ -386,15 +475,22 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
       [self drawGrooveInRect: line flipped: [view isFlipped]];
       return;
     }
-  [self drawGrooveInRect: [view bounds] flipped: [view isFlipped]];
+  // The box says it is opaque, and with the groove on the border rect the
+  // strips NSBox keeps for the title lie outside it.
+  [[[box window] backgroundColor] set];
+  NSRectFill(NSMakeRect(NSMinX(bounds), NSMaxY(border), NSWidth(bounds),
+                        NSMaxY(bounds) - NSMaxY(border)));
+  NSRectFill(NSMakeRect(NSMinX(bounds), NSMinY(bounds), NSWidth(bounds),
+                        NSMinY(border) - NSMinY(bounds)));
+  [self drawGrooveInRect: border flipped: [view isFlipped]];
 
   // The groove replaces the default border drawing, so the box title has to
   // be drawn here as well.
   if ([box titlePosition] != NSNoTitle)
     {
-      NSRect title = [box titleRect];
+      NSRect title = GeorgeBoxTitleRect([box titleRect], border);
 
-      [[self menuBackgroundColor] set];
+      [[[box window] backgroundColor] set];
       NSRectFill(title);
       [[box titleCell] drawWithFrame: title inView: view];
     }
@@ -496,13 +592,13 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
 {
   NSRect up = [self stepperUpButtonRectWithFrame: cellFrame];
   NSRect down = [self stepperDownButtonRectWithFrame: cellFrame];
-  BOOL flipped = [controlView isFlipped];
-  BOOL enabled = [cell isEnabled];
+  // The button rects come from an image size and can overhang a stepper laid
+  // out smaller; where they do, the view would cut the frame off.
+  NSRect unit = NSIntersectionRect(NSUnionRect(up, down), cellFrame);
 
-  [self drawScrollArrowInRect: up flipped: flipped direction: 0
-                      pressed: highlightUp enabled: enabled];
-  [self drawScrollArrowInRect: down flipped: flipped direction: 1
-                      pressed: highlightDown enabled: enabled];
+  [self drawStepperInRect: unit flipped: [controlView isFlipped]
+                upPressed: highlightUp downPressed: highlightDown
+                  enabled: [cell isEnabled]];
 }
 
 #pragma mark - Sliders
@@ -533,7 +629,14 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
       track.origin.x = round(NSMidX(cellFrame) - GeorgeSliderTrackThickness / 2.0);
       track.size.width = GeorgeSliderTrackThickness;
     }
-  [self drawWellInRect: track flipped: [view isFlipped] fill: GeorgeGray(0xCC)];
+  if ([cell isEnabled])
+    {
+      [self drawWellInRect: track flipped: [view isFlipped] fill: GeorgeGray(0xCC)];
+    }
+  else
+    {
+      [self drawDisabledTrackInRect: track flipped: [view isFlipped]];
+    }
 }
 
 - (void)drawBarInside:(NSRect)rect inCell:(NSCell *)cell flipped:(BOOL)flipped
@@ -553,9 +656,11 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
       [super drawKnobInCell: cell];
       return;
     }
-  [self drawSliderKnobInRect: [slider knobRectFlipped: flipped]
-                     flipped: flipped
-                     pressed: [slider isHighlighted]];
+  [self drawSliderThumbInRect: [slider knobRectFlipped: flipped]
+                      flipped: flipped
+                   horizontal: ![slider isVertical]
+                      pressed: [slider isHighlighted]
+                      enabled: [slider isEnabled]];
 }
 
 #pragma mark - Segmented control, color well, popup
@@ -598,8 +703,7 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
                                     withCell:(NSCell *)cell
                                       inView:(NSView *)controlView
 {
-  // The arrow is the registered common_3DArrowDown image, which NSPopUpButton
-  // draws itself; nothing is added on top of the bevel here.
+  // The arrow box is part of the frame, see -drawButton:in:view:style:state:.
 }
 
 #pragma mark - Progress indicators
@@ -659,9 +763,49 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
                      inView:(NSView *)controlView
                       state:(GSThemeControlState)state
 {
-  [self drawRaisedPanelInRect: cellFrame
-                     flipped: [controlView isFlipped]
-                     pressed: GeorgeStateIsPressed(state)];
+  BOOL flipped = [controlView isFlipped];
+  NSTableView *table = [controlView isKindOfClass: [NSTableHeaderView class]]
+    ? [(NSTableHeaderView *)controlView tableView] : nil;
+  NSTableColumn *column = nil;
+  NSSortDescriptor *sort = [[table sortDescriptors] firstObject];
+  NSEnumerator *columns = [[table tableColumns] objectEnumerator];
+  NSTableColumn *candidate;
+  BOOL sortedByKey;
+
+  // The cell does not know its column, and the table has no way back from
+  // one to the other.
+  while (column == nil && (candidate = [columns nextObject]) != nil)
+    {
+      if ([candidate headerCell] == cell)
+        {
+          column = candidate;
+        }
+    }
+  sortedByKey = (sort != nil && column != nil
+                 && [[[column sortDescriptorPrototype] key] isEqual: [sort key]]);
+
+  switch (GeorgeTableHeaderLookFor(GeorgeStateIsPressed(state),
+                                   sortedByKey
+                                   || (column != nil
+                                       && [table highlightedTableColumn] == column)))
+    {
+      case GeorgeTableHeaderSorted:
+        [self drawSortedHeaderInRect: cellFrame flipped: flipped];
+        break;
+      case GeorgeTableHeaderPressed:
+        [self drawRaisedPanelInRect: cellFrame flipped: flipped pressed: YES];
+        break;
+      default:
+        [self drawRaisedPanelInRect: cellFrame flipped: flipped pressed: NO];
+        break;
+    }
+  // Only a sort descriptor knows a direction: -highlightedTableColumn says
+  // which column, and libs-gui does not draw indicator images at all.
+  if (sortedByKey)
+    {
+      [self drawSortIndicatorInRect: cellFrame flipped: flipped
+                          ascending: [sort ascending]];
+    }
 }
 
 - (void)drawTableCornerView:(NSView *)cornerView withClip:(NSRect)aRect

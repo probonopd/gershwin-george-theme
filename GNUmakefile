@@ -22,6 +22,8 @@ George_OBJC_FILES = \
 		George+Parts.m\
 		George+TabView.m\
 		George+TitleBar.m\
+		GeorgeControlImage.m\
+		GeorgeGeometry.m\
 		GeorgePlatinum.m\
 		GeorgeScrollerCells.m\
 		NSFont+George.m

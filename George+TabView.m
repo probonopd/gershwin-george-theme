@@ -5,10 +5,11 @@
  */
 
 /* Tab views in the Platinum style. Tabs are raised panels with
- * clipped top corners; the selected one is filled like the pane below it and
+ * slanted sides; the selected one is filled like the pane below it and
  * eats the pane border so the two read as one surface. */
 
 #import "George+TabView.h"
+#import "GeorgeGeometry.h"
 #import "GeorgePlatinum.h"
 
 static const CGFloat GeorgeTabLabelPadding = 12.0;
@@ -26,33 +27,61 @@ static const CGFloat GeorgeTabStripInset = 8.0;
   NSRect r = NSIntegralRect(frame);
   CGFloat w = NSWidth(r), h = NSHeight(r);
   NSInteger face = selected ? 0xDD : 0xCC;
+  // A selected tab is two rows taller only because it runs into the pane; its
+  // sides slant over the same rows as those of its neighbors.
+  NSInteger slanted = (NSInteger)h - (selected ? 2 : 0);
+  NSInteger y, pass;
+  NSInteger lastInset = 0;
 
 #define TAB_FILL(x, y, fw, fh, gray) \
   GeorgeFill(r, flipped, 1, (x), (upward ? (y) : h - (y) - (fh)), \
                     (fw), (fh), GeorgeGray(gray))
 
-  if (w < 6 || h < 6)
-    return;
+  if (w < 2 * GeorgeTabSideInset(0, slanted) + 6 || h < 6)
+    {
+      return;
+    }
 
-  TAB_FILL(0, 0, w, h, 0xDD);
-  TAB_FILL(1, 1, w - 2, h - 1, face);
+  // No background goes down first: the corners the slant leaves open belong
+  // to the strip, or to the tab next door. Each step runs on down to the base
+  // rather than being one row: at a fractional scale the edges between rows
+  // blend, and row by row that would stripe the whole face.
+  for (pass = 0; pass < 2; pass++)
+    {
+      for (y = pass; y < (NSInteger)h; y++)
+        {
+          NSInteger inset = y < slanted ? GeorgeTabSideInset(y, slanted) : 0;
 
-  TAB_FILL(2, 0, w - 4, 1, 0x00);
-  TAB_FILL(1, 1, 1, 1, 0x00);
-  TAB_FILL(w - 2, 1, 1, 1, 0x00);
-  TAB_FILL(0, 2, 1, h - 2, 0x00);
-  TAB_FILL(w - 1, 2, 1, h - 2, 0x00);
+          if (y == pass || inset != lastInset)
+            {
+              TAB_FILL(inset + pass, y, w - 2 * (inset + pass), h - y,
+                       pass == 0 ? 0x00 : face);
+            }
+          lastInset = inset;
+        }
+    }
+  for (y = 1; y < (NSInteger)h; y++)
+    {
+      NSInteger inset = y < slanted ? GeorgeTabSideInset(y, slanted) : 0;
 
-  TAB_FILL(2, 1, w - 4, 1, 0xFF);
-  TAB_FILL(1, 2, 1, h - 2, 0xFF);
-  TAB_FILL(w - 2, 2, 1, h - 2, 0x99);
+      TAB_FILL(inset + 1, y, 1, 1, 0xFF);
+      TAB_FILL(w - inset - 2, y, 1, 1, 0x99);
+      if (y == 1)
+        {
+          TAB_FILL(inset + 1, y, w - 2 * inset - 2, 1, 0xFF);
+        }
+    }
 
   // An unselected tab keeps its own base line; a selected one runs into the
   // pane, so its last two rows stay filled with the pane color.
   if (!selected)
-    TAB_FILL(0, h - 1, w, 1, 0x00);
+    {
+      TAB_FILL(0, h - 1, w, 1, 0x00);
+    }
   else
-    TAB_FILL(1, h - 2, w - 2, 2, face);
+    {
+      TAB_FILL(1, h - 2, w - 2, 2, face);
+    }
 
 #undef TAB_FILL
 }

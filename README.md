@@ -45,13 +45,15 @@ once per process, so applications pick a new one up when they restart.
 | --- | --- |
 | `GeorgePlatinum.m` | Pixel fill helper, gray levels, the eight color schemes |
 | `George.m` | Every GSTheme hook, routed to a Platinum part |
-| `George+Parts.m` | Push buttons, checkboxes, radio buttons, scroll bar parts, wells, panels, grooves, slider knobs, the grow box, the barber pole |
+| `George+Parts.m` | Push buttons, checkboxes, radio buttons, scroll bar parts, pop-up arrow boxes, little arrows, disclosure triangles, menu check marks, wells, panels, grooves, slider thumbs, the grow box, the barber pole |
 | `George+TitleBar.m` | Title bars, their ridges and texture, the three widgets |
 | `George+Frame.m` | The thick draggable border around the client |
 | `George+Menu.m` | Menu bar, menus, items, separators |
 | `George+TabView.m` | Tabs and their pane |
 | `George+Icons.m` | Folders, documents, volumes, the trash and the icon tile |
 | `GeorgeScrollerCells.m` | The cells NSScroller draws its parts through |
+| `GeorgeControlImage.m` | The checkbox, radio and pop-up images that look at the control they are drawn for |
+| `GeorgeGeometry.m` | What the parts decide before they draw, free of AppKit so it can be tested without a display |
 | `NSFont+George.m` | The three interface faces, and the size they are asked for |
 
 `AppearanceMetrics.h` holds the layout constants; do not hardcode metrics in
