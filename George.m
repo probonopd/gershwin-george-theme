@@ -186,6 +186,28 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
 {
 }
 
+/* Platinum's ring: three pixels wide with a one pixel gap to the button. */
+- (CGFloat)defaultButtonRingOutset
+{
+  return 4.0;
+}
+
+- (void)drawDefaultButtonRingForCell:(NSButtonCell *)cell inView:(NSView *)view
+{
+  NSView *button = [cell controlView];
+  NSBezelStyle style = [cell bezelStyle];
+  BOOL active = [cell isEnabled] && [[view window] isKeyWindow];
+  CGFloat outset = [self defaultButtonRingOutset];
+
+  // Only the push button has the shape the ring goes around.
+  if (![cell isBordered]
+      || (style != NSRoundedBezelStyle && style != NSRoundRectBezelStyle
+          && style != NSTexturedRoundedBezelStyle && style != 0))
+    return;
+  [self drawDefaultRingInRect: NSInsetRect([button frame], -outset, -outset)
+                        color: active ? GeorgeGray(0x00) : GeorgeGray(0x88)];
+}
+
 - (void)drawButton:(NSRect)frame
                 in:(NSCell *)cell
               view:(NSView *)view
@@ -205,10 +227,6 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
         // The push button: the only Platinum button with cut corners.
         [self drawPushButtonInRect: frame flipped: flipped
                           pressed: pressed enabled: enabled];
-        // There is no room around a GNUstep button for Platinum's heavy
-        // ring, so the default button is marked with a doubled outline.
-        if (enabled && [[view window] defaultButtonCell] == (NSButtonCell *)cell)
-          [self drawDefaultOutlineInRect: frame flipped: flipped];
         break;
       default:
         [self drawBevelButtonInRect: frame flipped: flipped
@@ -291,30 +309,17 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
   return margins;
 }
 
-/* Platinum has no focus ring; what marks the keyboard focus is the two pixel
- * band in the accent color that the Appearance Manager draws around the
- * focused part. */
+/* Empty rather than absent: GSTheme would otherwise draw its dotted frame. The
+ * insertion point and the selection are what show the keyboard focus. */
 - (void)drawFocusFrame:(NSRect)frame view:(NSView *)view
 {
-  NSRect r = NSIntegralRect(frame);
-  NSRect bands[GeorgeFocusRingBandCount];
-  NSUInteger i;
-
-  if (NSWidth(r) < 4 || NSHeight(r) < 4)
-    {
-      return;
-    }
-  GeorgeFocusRingBands(r, bands);
-  [GeorgeSchemeColor(3) set];
-  for (i = 0; i < GeorgeFocusRingBandCount; i++)
-    {
-      NSRectFill(bands[i]);
-    }
 }
 
 - (void)drawWindowBackground:(NSRect)frame view:(NSView *)view
 {
-  [GeorgeGray(0xDD) set];
+  /* Not the Platinum gray as such: -colors makes that every window's default
+   * color, and the Dock, Stickies and tooltips ask for a color of their own. */
+  [[[view window] backgroundColor] set];
   NSRectFill(frame);
 }
 
@@ -475,13 +480,10 @@ static BOOL GeorgeStateIsPressed(GSThemeControlState state)
       [self drawGrooveInRect: line flipped: [view isFlipped]];
       return;
     }
-  // The box says it is opaque, and with the groove on the border rect the
-  // strips NSBox keeps for the title lie outside it.
+  // The box says it is opaque, so nothing behind it clears what it leaves
+  // unpainted: a default button ring around a button in the box would stay.
   [[[box window] backgroundColor] set];
-  NSRectFill(NSMakeRect(NSMinX(bounds), NSMaxY(border), NSWidth(bounds),
-                        NSMaxY(bounds) - NSMaxY(border)));
-  NSRectFill(NSMakeRect(NSMinX(bounds), NSMinY(bounds), NSWidth(bounds),
-                        NSMinY(border) - NSMinY(bounds)));
+  NSRectFill(bounds);
   [self drawGrooveInRect: border flipped: [view isFlipped]];
 
   // The groove replaces the default border drawing, so the box title has to

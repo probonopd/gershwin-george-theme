@@ -45,4 +45,20 @@
   return GeorgeGray(lit[line]);
 }
 
+- (NSColor *)windowFrameBorderCornerColorAtX:(NSInteger)x
+                                           y:(NSInteger)y
+                                        edge:(NSInteger)edge
+                                      active:(BOOL)active
+{
+  CGFloat s = GeorgeUnit();
+  NSInteger line = (NSInteger)floor(x / s);
+
+  // Bottom left is the one corner where a lit face meets a shaded one, and
+  // Platinum turns neither around it: both bevels end on the face color.
+  if (active && edge == GeorgeFrameEdgeLeft && line == (NSInteger)floor(y / s)
+      && (line == 1 || line == 4))
+    return GeorgeGray(0xCC);
+  return nil;
+}
+
 @end

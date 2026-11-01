@@ -98,22 +98,6 @@ NSRect GeorgeBoxTitleRect(NSRect titleRect, NSRect borderRect)
   return title;
 }
 
-void GeorgeFocusRingBands(NSRect frame, NSRect bands[GeorgeFocusRingBandCount])
-{
-  NSRect inner = NSInsetRect(frame, 1, 1);
-  CGFloat x = NSMinX(frame), y = NSMinY(frame);
-  CGFloat w = NSWidth(frame), h = NSHeight(frame);
-
-  bands[0] = NSMakeRect(x + 1, y, w - 2, 1);
-  bands[1] = NSMakeRect(x + 1, NSMaxY(frame) - 1, w - 2, 1);
-  bands[2] = NSMakeRect(x, y + 1, 1, h - 2);
-  bands[3] = NSMakeRect(NSMaxX(frame) - 1, y + 1, 1, h - 2);
-  bands[4] = NSMakeRect(NSMinX(inner), NSMinY(inner), NSWidth(inner), 1);
-  bands[5] = NSMakeRect(NSMinX(inner), NSMaxY(inner) - 1, NSWidth(inner), 1);
-  bands[6] = NSMakeRect(NSMinX(inner), NSMinY(inner), 1, NSHeight(inner));
-  bands[7] = NSMakeRect(NSMaxX(inner) - 1, NSMinY(inner), 1, NSHeight(inner));
-}
-
 GeorgeTableHeaderLook GeorgeTableHeaderLookFor(BOOL highlighted, BOOL sorted)
 {
   if (sorted)

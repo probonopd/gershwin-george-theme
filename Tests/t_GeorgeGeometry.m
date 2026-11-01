@@ -10,20 +10,6 @@
 #import "Testing.h"
 #import "GeorgeGeometry.h"
 
-static BOOL RectsCoverPoint(const NSRect *rects, NSUInteger count, NSPoint p)
-{
-  NSUInteger i;
-
-  for (i = 0; i < count; i++)
-    {
-      if (NSPointInRect(p, rects[i]))
-        {
-          return YES;
-        }
-    }
-  return NO;
-}
-
 int main(void)
 {
   NSAutoreleasePool *arp = [NSAutoreleasePool new];
@@ -99,24 +85,6 @@ int main(void)
          "the title moves left and stays on its row");
     PASS(NSMinX(wide) == 5 && NSMaxX(wide) == 260, "a wide title stays inside the box");
     PASS(NSMinX(wider) == 0, "what does not fit keeps the start of the title in view");
-  }
-
-  /* Focus ring */
-  {
-    NSRect r = NSMakeRect(10, 10, 40, 20);
-    NSRect bands[GeorgeFocusRingBandCount];
-
-    GeorgeFocusRingBands(r, bands);
-    PASS(!RectsCoverPoint(bands, GeorgeFocusRingBandCount, NSMakePoint(10.5, 10.5)),
-         "the outer corner is clipped");
-    PASS(!RectsCoverPoint(bands, GeorgeFocusRingBandCount, NSMakePoint(49.5, 29.5)),
-         "the opposite corner is clipped too");
-    PASS(RectsCoverPoint(bands, GeorgeFocusRingBandCount, NSMakePoint(11.5, 10.5)),
-         "the band reaches next to the corner");
-    PASS(RectsCoverPoint(bands, GeorgeFocusRingBandCount, NSMakePoint(11.5, 11.5)),
-         "the inner ring keeps its corner");
-    PASS(!RectsCoverPoint(bands, GeorgeFocusRingBandCount, NSMakePoint(12.5, 12.5)),
-         "the band is two pixels wide");
   }
 
   /* Table header */

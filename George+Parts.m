@@ -603,44 +603,25 @@ static NSInteger GeorgeDiscGray(NSInteger x, NSInteger y)
 
 #pragma mark - Wells, panels and grooves
 
-- (void)drawDefaultRingInRect:(NSRect)frame
+- (void)drawDefaultRingInRect:(NSRect)frame color:(NSColor *)color
 {
   NSGraphicsContext *context = [NSGraphicsContext currentContext];
   BOOL antialias = [context shouldAntialias];
-  // Stroked on the pixel centre so the three pixel line lands on whole pixels.
-  NSRect r = NSInsetRect(NSIntegralRect(frame), 1.5, 1.5);
+  // Snapped to device pixels first: at a fractional scale the ring would
+  // otherwise keep an uneven gap to the button, whose edges are snapped too.
+  NSRect outer = [[NSView focusView] centerScanRect: frame];
+  // Stroked on the center of the line so its three pixels land on whole ones.
+  NSRect r = NSInsetRect(outer, 1.5, 1.5);
   NSBezierPath *ring;
 
   if (NSWidth(r) < 8 || NSHeight(r) < 8)
     return;
   ring = [NSBezierPath bezierPathWithRoundedRect: r xRadius: 6.0 yRadius: 6.0];
   [context setShouldAntialias: NO];
-  [GeorgeGray(0x00) set];
+  [color set];
   [ring setLineWidth: 3.0];
   [ring stroke];
   [context setShouldAntialias: antialias];
-}
-
-- (void)drawDefaultOutlineInRect:(NSRect)frame flipped:(BOOL)flipped
-{
-  NSRect r = NSIntegralRect(frame);
-  CGFloat w = NSWidth(r), h = NSHeight(r);
-  NSColor *edge = GeorgeGray(0x00);
-
-  if (w < 12 || h < 12)
-    return;
-  // A second outline one pixel inside the first, following the same cut
-  // corners, so the button reads as the default one without growing.
-#define EDGE(x_, y_, w_, h_) GeorgeFill(r, flipped, 1, x_, y_, w_, h_, edge)
-  EDGE(3, 1, w - 6, 1);
-  EDGE(3, h - 2, w - 6, 1);
-  EDGE(1, 3, 1, h - 6);
-  EDGE(w - 2, 3, 1, h - 6);
-  EDGE(2, 2, 1, 1);
-  EDGE(w - 3, 2, 1, 1);
-  EDGE(2, h - 3, 1, 1);
-  EDGE(w - 3, h - 3, 1, 1);
-#undef EDGE
 }
 
 - (void)drawBevelButtonInRect:(NSRect)frame

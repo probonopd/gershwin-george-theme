@@ -32,9 +32,22 @@ t_GeorgeTitleBar_OBJC_FILES += ../George.m \
                                ../GeorgeControlImage.m \
                                ../GeorgeGeometry.m
 
+t_GeorgeWindowBackground_OBJC_FILES += ../George.m \
+                                       ../George+Frame.m \
+                                       ../George+Icons.m \
+                                       ../George+Menu.m \
+                                       ../George+Parts.m \
+                                       ../George+TabView.m \
+                                       ../George+TitleBar.m \
+                                       ../GeorgePlatinum.m \
+                                       ../GeorgeScrollerCells.m \
+                                       ../GeorgeControlImage.m \
+                                       ../GeorgeGeometry.m
+
 t_GeorgeGeometry_OBJC_FILES += ../GeorgeGeometry.m
 
 t_GeorgeFonts_TOOL_LIBS += -lgnustep-gui
 t_GeorgeIcons_TOOL_LIBS += -lgnustep-gui
 t_GeorgePlatinum_TOOL_LIBS += -lgnustep-gui
 t_GeorgeTitleBar_TOOL_LIBS += -lgnustep-gui
+t_GeorgeWindowBackground_TOOL_LIBS += -lgnustep-gui

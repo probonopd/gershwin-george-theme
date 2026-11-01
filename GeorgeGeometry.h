@@ -48,11 +48,6 @@ BOOL GeorgeToggleLookIsPlain(GeorgeToggleLook look, GeorgeToggleMark imageMark);
 /* Where a group box title goes: on the same row, at the left of the box. */
 NSRect GeorgeBoxTitleRect(NSRect titleRect, NSRect borderRect);
 
-/* The focus band with its outer corners clipped, as whole rects so that it
- * reads the same in flipped and unflipped views. */
-enum { GeorgeFocusRingBandCount = 8 };
-void GeorgeFocusRingBands(NSRect frame, NSRect bands[GeorgeFocusRingBandCount]);
-
 typedef NS_ENUM(NSInteger, GeorgeTableHeaderLook) {
     GeorgeTableHeaderNormal = 0,
     GeorgeTableHeaderPressed,

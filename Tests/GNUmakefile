@@ -4,7 +4,8 @@
 
 include $(GNUSTEP_MAKEFILES)/common.make
 
-TEST_TOOL_NAME = t_GeorgeFonts t_GeorgeGeometry t_GeorgeIcons t_GeorgePlatinum t_GeorgeTitleBar
+TEST_TOOL_NAME = t_GeorgeFonts t_GeorgeGeometry t_GeorgeIcons t_GeorgePlatinum t_GeorgeTitleBar \
+                 t_GeorgeWindowBackground
 
 ADDITIONAL_CPPFLAGS += -I$(GNUSTEP_MAKEFILES)/TestFramework
 
@@ -13,6 +14,7 @@ t_GeorgeGeometry_OBJC_FILES = t_GeorgeGeometry.m
 t_GeorgeIcons_OBJC_FILES = t_GeorgeIcons.m
 t_GeorgePlatinum_OBJC_FILES = t_GeorgePlatinum.m
 t_GeorgeTitleBar_OBJC_FILES = t_GeorgeTitleBar.m
+t_GeorgeWindowBackground_OBJC_FILES = t_GeorgeWindowBackground.m
 
 -include GNUmakefile.preamble
 include $(GNUSTEP_MAKEFILES)/test-tool.make

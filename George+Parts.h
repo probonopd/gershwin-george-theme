@@ -33,10 +33,8 @@
                      flipped:(BOOL)flipped
                   horizontal:(BOOL)horizontal;
 
-/* Heavy ring Platinum puts around the default push button, and the doubled
- * outline that marks it where there is no room for the ring. */
-- (void)drawDefaultRingInRect:(NSRect)frame;
-- (void)drawDefaultOutlineInRect:(NSRect)frame flipped:(BOOL)flipped;
+/* Heavy ring Platinum puts around the default push button. */
+- (void)drawDefaultRingInRect:(NSRect)frame color:(NSColor *)color;
 
 /* Square cornered button: what segments, color wells and toolbar items use. */
 - (void)drawBevelButtonInRect:(NSRect)frame
